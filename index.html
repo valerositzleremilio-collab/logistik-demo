@@ -51,33 +51,6 @@
       pointer-events: none;
     }
 
-    /* ── CUSTOM CURSOR ───────────────────────────────────── */
-    .cursor {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 1.5px solid var(--cobalt);
-      border-radius: 50%;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0;
-      display: none;
-      mix-blend-mode: screen;
-      transition: width 0.35s var(--ease-quart), height 0.35s var(--ease-quart),
-                  border-color 0.35s var(--ease-quart), background 0.35s var(--ease-quart),
-                  opacity 0.3s;
-      will-change: transform;
-    }
-    @media (pointer: fine) {
-      .cursor { display: block; }
-      * { cursor: none !important; }
-    }
-    .cursor.is-link {
-      width: 54px; height: 54px;
-      background: oklch(0.60 0.185 228 / 0.12);
-      border-color: var(--cobalt-hi);
-    }
-
     /* ── UTILITIES ──────────────────────────────────────── */
     .label {
       font-family: var(--font-b);
@@ -137,7 +110,6 @@
       display: inline-flex; align-items: center; gap: 0.625rem;
       padding: 0.875rem 2rem; border-radius: 4px;
       font-family: var(--font-b); font-size: 0.9375rem; font-weight: 600;
-      cursor: none;
       transition: background 0.2s var(--ease-quart), transform 0.15s var(--ease-quart),
                   border-color 0.2s, color 0.2s;
     }
@@ -153,82 +125,36 @@
     .btn-ghost:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-1px); }
     .btn-ghost:active { transform: scale(0.97); }
 
-    /* ── HERO ───────────────────────────────────────────── */
+    /* ── HERO (VIDEO) ───────────────────────────────────── */
     .hero {
-      min-height: 100dvh;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 0 6.5rem;
-      position: relative; overflow: hidden;
+      position: relative;
+      height: 100dvh;
+      overflow: hidden;
     }
-    .hero::before {
-      content: '';
+    .hero__video {
       position: absolute; inset: 0;
-      background-image:
-        linear-gradient(oklch(0.22 0.000 0 / 0.40) 1px, transparent 1px),
-        linear-gradient(90deg, oklch(0.22 0.000 0 / 0.40) 1px, transparent 1px);
-      background-size: 64px 64px;
-      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 20%, transparent 100%);
-      mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 20%, transparent 100%);
+      width: 100%; height: 100%;
+      object-fit: cover;
       pointer-events: none;
     }
-    .hero__glow {
-      position: absolute; top: -240px; left: 50%; transform: translateX(-50%);
-      width: 900px; height: 700px;
-      background: radial-gradient(ellipse at center, oklch(0.60 0.185 228 / 0.14) 0%, transparent 68%);
-      pointer-events: none;
+    .hero__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, oklch(0.08 0 0) 0%, transparent 60%);
+      opacity: 0; pointer-events: none;
+      will-change: opacity;
     }
-    .hero__inner { position: relative; }
-    .hero__kicker {
-      display: inline-flex; align-items: center; gap: 0.625rem;
-      margin-bottom: 2rem;
-      visibility: hidden;
+    .hero__reveal {
+      position: absolute; bottom: 8rem; left: 0; right: 0;
+      opacity: 0; pointer-events: none;
+      text-align: center; padding: 0 2rem;
+      will-change: transform, opacity;
     }
-    .hero__kicker-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--amber);
-    }
-    .hero__headline {
+    .hero__reveal-headline {
       font-family: var(--font-d);
-      font-size: clamp(3.75rem, 9vw, 8rem);
-      font-weight: 800;
-      line-height: 0.90;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 800; line-height: 0.92;
       letter-spacing: -0.025em;
-      margin-bottom: 1.75rem;
-      text-wrap: balance;
-    }
-    .hero__headline .line { display: block; overflow: hidden; padding-bottom: 0.06em; }
-    .hero__headline .line-inner { display: block; will-change: transform; }
-    .hero__headline .accent { color: var(--cobalt); }
-    .hero__sub {
-      font-size: clamp(1rem, 1.4vw, 1.125rem);
-      color: var(--muted); max-width: 54ch; line-height: 1.65;
-      margin-bottom: 2.5rem;
-      visibility: hidden;
-    }
-    .hero__actions {
-      display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
-      visibility: hidden;
-    }
-
-    /* ── STAT COUNTERS ──────────────────────────────────── */
-    .hero__stats {
-      margin-top: 5rem; padding-top: 2.5rem;
-      border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-      visibility: hidden;
-    }
-    .stat__num {
-      font-family: var(--font-d);
-      font-size: clamp(2.25rem, 4vw, 3.5rem);
-      font-weight: 700; line-height: 1;
-      letter-spacing: -0.02em;
-      display: flex; align-items: baseline; gap: 0.1em;
-    }
-    .stat__unit { color: var(--cobalt); font-size: 0.58em; font-weight: 700; }
-    .stat__lbl {
-      margin-top: 0.375rem;
-      font-size: 0.8125rem; color: var(--muted); font-weight: 400;
+      color: var(--ink); text-wrap: balance;
     }
 
     /* ── PROOF BAR ──────────────────────────────────────── */
@@ -520,28 +446,22 @@
     }
     @media (max-width: 900px) {
       .nav__links { display: none; }
-      .hero__stats { grid-template-columns: repeat(2, 1fr); }
       .services__head { flex-direction: column; align-items: flex-start; }
       .network__grid { grid-template-columns: 1fr; gap: 3.5rem; }
       .diff__list { grid-template-columns: 1fr; gap: 2rem; }
       .footer__cols { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 600px) {
-      .hero { padding-bottom: 4.5rem; }
       .services__grid { grid-template-columns: 1fr; }
-      .hero__stats { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+      .hero__reveal { bottom: 5rem; }
       .cta-strip__actions { flex-direction: column; align-items: stretch; }
       .footer__cols { grid-template-columns: 1fr; }
     }
 
     /* ── REDUCED MOTION ─────────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
-      .hero__kicker, .hero__sub, .hero__actions, .hero__stats {
-        visibility: visible !important; opacity: 1 !important;
-      }
-      .hero__headline .line-inner { transform: translateY(0) !important; }
-      .cursor { display: none !important; }
-      * { cursor: auto !important; }
+      .hero__overlay { opacity: 1 !important; }
+      .hero__reveal  { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
@@ -555,9 +475,6 @@
     </filter>
     <rect width="100%" height="100%" filter="url(#grain-f)" opacity="0.04"/>
   </svg>
-
-  <!-- ═══ CURSOR ════════════════════════════════════════ -->
-  <div class="cursor" aria-hidden="true"></div>
 
   <!-- ═══ NAV ══════════════════════════════════════════ -->
   <nav class="nav" id="nav">
@@ -577,67 +494,12 @@
   </nav>
 
   <!-- ═══ HERO ══════════════════════════════════════════ -->
-  <section class="hero">
-    <div class="hero__glow"></div>
-    <div class="hero__inner wrap">
-      <div class="hero__kicker label">
-        <span class="hero__kicker-dot"></span>
-        Intercontinental Freight Solutions
-      </div>
-
-      <h1 class="hero__headline">
-        <span class="line"><span class="line-inner">MOVE ANYTHING.</span></span>
-        <span class="line"><span class="line-inner accent">ANYWHERE.</span></span>
-        <span class="line"><span class="line-inner">ON TIME.</span></span>
-      </h1>
-
-      <p class="hero__sub">
-        TRANSLOG connects manufacturers, distributors, and enterprises
-        to a global freight network across 190 countries — air, ocean,
-        rail, and road — with precision tracking from origin to final mile.
-      </p>
-
-      <div class="hero__actions">
-        <a href="#contact" class="btn btn-primary">
-          Get a Quote
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <a href="#services" class="btn btn-ghost">Explore Services</a>
-      </div>
-
-      <!-- STATS -->
-      <div class="hero__stats">
-        <div class="stat">
-          <div class="stat__num">
-            <span class="counter" data-target="190">0</span>
-            <span class="stat__unit">+</span>
-          </div>
-          <div class="stat__lbl">Countries served</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num">
-            <span class="counter" data-target="2400">0</span>
-            <span class="stat__unit">+</span>
-          </div>
-          <div class="stat__lbl">Routes operated</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num">
-            <span class="counter" data-target="98">0</span>
-            <span class="stat__unit">%</span>
-          </div>
-          <div class="stat__lbl">On-time delivery rate</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num">
-            <span class="counter" data-target="14">0</span>
-            <span class="stat__unit">M+</span>
-          </div>
-          <div class="stat__lbl">Shipments delivered</div>
-        </div>
-      </div>
+  <section class="hero" id="hero">
+    <video class="hero__video" src="hero-loop.mp4"
+           muted playsinline preload="auto" aria-hidden="true"></video>
+    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="hero__reveal" aria-hidden="true">
+      <p class="hero__reveal-headline">MOVE ANYTHING.<br>ANYWHERE.<br>ON TIME.</p>
     </div>
   </section>
 
@@ -917,96 +779,49 @@
     gsap.ticker.add(time => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    /* ── CUSTOM CURSOR ───────────────────────────────────── */
-    const cursor = document.querySelector('.cursor');
-    if (cursor && window.matchMedia('(pointer: fine)').matches) {
-      let cx = 0, cy = 0, tx = 0, ty = 0;
-      let cursorVisible = false;
-
-      window.addEventListener('mousemove', e => {
-        tx = e.clientX;
-        ty = e.clientY;
-        if (!cursorVisible) {
-          cx = tx; cy = ty;
-          cursor.style.opacity = '1';
-          cursorVisible = true;
-        }
-      });
-
-      gsap.ticker.add(() => {
-        cx += (tx - cx) * 0.12;
-        cy += (ty - cy) * 0.12;
-        cursor.style.transform = 'translate(' + (cx - 18) + 'px,' + (cy - 18) + 'px)';
-      });
-
-      document.querySelectorAll('a, button, .svc').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('is-link'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('is-link'));
-      });
-
-      document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-      document.addEventListener('mouseenter', () => { if (cursorVisible) cursor.style.opacity = '1'; });
-
-      const globeEl = document.getElementById('globe-container');
-      if (globeEl) {
-        globeEl.addEventListener('mouseenter', () => { cursor.style.opacity = '0'; });
-        globeEl.addEventListener('mouseleave', () => { if (cursorVisible) cursor.style.opacity = '1'; });
-      }
-    }
-
     /* ── NAV SCROLL STATE ────────────────────────────────── */
     ScrollTrigger.create({
       start: 'top -72',
       onUpdate: s => document.getElementById('nav').classList.toggle('scrolled', s.progress > 0)
     });
 
-    /* ── HERO ENTRANCE ───────────────────────────────────── */
-    gsap.set('.hero__headline .line-inner', { yPercent: 110 });
+    /* ── SCROLL VIDEO HERO ───────────────────────────────── */
+    (function initVideoHero() {
+      var video   = document.querySelector('.hero__video');
+      var overlay = document.querySelector('.hero__overlay');
+      var reveal  = document.querySelector('.hero__reveal');
+      if (!video) return;
 
-    const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-    heroTl
-      .set('.hero__kicker', { visibility: 'visible' })
-      .from('.hero__kicker', { opacity: 0, y: 14, duration: 0.8 }, 0.25)
-      .to('.hero__headline .line-inner', {
-        yPercent: 0,
-        duration: 1.05,
-        stagger: 0.09,
-      }, 0.38)
-      .set(['.hero__sub', '.hero__actions'], { visibility: 'visible' })
-      .from('.hero__sub',     { opacity: 0, y: 16, duration: 0.85 }, '-=0.58')
-      .from('.hero__actions', { opacity: 0, y: 16, duration: 0.85 }, '-=0.68')
-      .set('.hero__stats', { visibility: 'visible' })
-      .from('.hero__stats',   { opacity: 0, y: 22, duration: 0.9  }, '-=0.58');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        overlay.style.opacity = '1';
+        reveal.style.opacity  = '1';
+        return;
+      }
 
-    /* ── COUNTER ANIMATION ───────────────────────────────── */
-    let countersRan = false;
-    ScrollTrigger.create({
-      trigger: '.hero__stats',
-      start: 'top 92%',
-      onEnter() {
-        if (countersRan) return;
-        countersRan = true;
-        document.querySelectorAll('.counter').forEach(el => {
-          const end = +el.dataset.target;
-          gsap.to({ n: 0 }, {
-            n: end,
-            duration: 2.4,
-            ease: 'expo.out',
-            delay: 0.2,
-            onUpdate() {
-              el.textContent = Math.round(this.targets()[0].n).toLocaleString();
-            }
-          });
+      var ready = false;
+      function setupScrub() {
+        if (ready) return;
+        ready = true;
+        ScrollTrigger.create({
+          trigger: '.hero',
+          start:   'top top',
+          end:     '+=200%',
+          pin:     true,
+          scrub:   true,
+          onUpdate: function(self) {
+            var dur = video.duration;
+            if (dur && !isNaN(dur)) video.currentTime = self.progress * dur;
+            var t = Math.max(0, (self.progress - 0.5) / 0.5);
+            overlay.style.opacity  = t;
+            reveal.style.opacity   = t;
+            reveal.style.transform = 'translateY(' + ((1 - t) * 24) + 'px)';
+          }
         });
       }
-    });
 
-    /* ── PARALLAX HERO GLOW ──────────────────────────────── */
-    gsap.to('.hero__glow', {
-      y: -140,
-      ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
-    });
+      video.addEventListener('loadedmetadata', setupScrub, { once: true });
+      if (video.readyState >= 1) setupScrub();
+    })();
 
     /* ── CUSTOM WORD SPLIT ───────────────────────────────── */
     function splitWords(el) {
