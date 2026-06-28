@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRANSLOG — Intercontinental Logistics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --bg:          oklch(0.08 0.000   0);
+      --surface:     oklch(0.12 0.000   0);
+      --surface-hi:  oklch(0.17 0.000   0);
+      --ink:         oklch(0.95 0.000   0);
+      --muted:       oklch(0.50 0.000   0);
+      --dim:         oklch(0.65 0.000   0);
+      --cobalt:      oklch(0.60 0.185 228);
+      --cobalt-hi:   oklch(0.67 0.185 228);
+      --cobalt-lo:   oklch(0.35 0.130 228);
+      --cobalt-10:   oklch(0.60 0.185 228 / 0.10);
+      --amber:       oklch(0.82 0.120  75);
+      --border:      oklch(0.20 0.000   0);
+      --border-hi:   oklch(0.26 0.000   0);
+      --font-d:      'Barlow Condensed', sans-serif;
+      --font-b:      'Barlow', sans-serif;
+      --ease-quart:  cubic-bezier(0.25, 1, 0.5,  1);
+      --ease-expo:   cubic-bezier(0.16, 1, 0.3,  1);
+    }
+
+    /* ── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-b);
+      font-size: 1rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── UTILITIES ──────────────────────────────────────── */
+    .label {
+      font-family: var(--font-b);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .wrap   { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .wrap-s { max-width:  800px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ── NAV ────────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 64px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 0.35s var(--ease-quart), border-color 0.35s;
+    }
+    .nav.scrolled {
+      background: oklch(0.08 0.000 0 / 0.90);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom-color: var(--border);
+    }
+    .nav__brand {
+      font-family: var(--font-d);
+      font-size: 1.375rem; font-weight: 800;
+      letter-spacing: 0.10em;
+    }
+    .nav__brand em { color: var(--cobalt); font-style: normal; }
+    .nav__links {
+      display: flex; align-items: center; gap: 2.5rem; list-style: none;
+    }
+    .nav__links a {
+      font-size: 0.8rem; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--muted); transition: color 0.2s;
+    }
+    .nav__links a:hover { color: var(--ink); }
+    .nav__cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      background: var(--cobalt); color: #fff;
+      font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em;
+      border-radius: 4px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav__cta:hover { background: var(--cobalt-hi); transform: translateY(-1px); }
+
+    /* ── BUTTONS ────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.625rem;
+      padding: 0.875rem 2rem; border-radius: 4px;
+      font-family: var(--font-b); font-size: 0.9375rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s var(--ease-quart), transform 0.15s var(--ease-quart), border-color 0.2s, color 0.2s;
+    }
+    .btn-primary { background: var(--cobalt); color: #fff; }
+    .btn-primary:hover { background: var(--cobalt-hi); transform: translateY(-2px); }
+    .btn-primary svg, .btn-ghost svg { transition: transform 0.2s var(--ease-quart); }
+    .btn-primary:hover svg, .btn-ghost:hover svg { transform: translateX(4px); }
+    .btn-ghost {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border-hi);
+    }
+    .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 0 7rem;
+      position: relative; overflow: hidden;
+    }
+    /* Grid texture */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(oklch(0.22 0.000 0 / 0.45) 1px, transparent 1px),
+        linear-gradient(90deg, oklch(0.22 0.000 0 / 0.45) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 20%, transparent 100%);
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 20%, transparent 100%);
+      pointer-events: none;
+    }
+    /* Cobalt glow at top */
+    .hero__glow {
+      position: absolute; top: -240px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 700px;
+      background: radial-gradient(ellipse at center, oklch(0.60 0.185 228 / 0.13) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero__inner { position: relative; }
+    .hero__kicker {
+      display: inline-flex; align-items: center; gap: 0.625rem;
+      margin-bottom: 2rem;
+      visibility: hidden;
+    }
+    .hero__kicker-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--amber);
+    }
+
+    /* Headline split-line animation prep */
+    .hero__headline {
+      font-family: var(--font-d);
+      font-size: clamp(3.75rem, 9vw, 8rem);
+      font-weight: 800;
+      line-height: 0.90;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.75rem;
+      text-wrap: balance;
+    }
+    .hero__headline .line { display: block; overflow: hidden; }
+    .hero__headline .line-inner { display: block; will-change: transform; }
+    .hero__headline .accent { color: var(--cobalt); }
+
+    .hero__sub {
+      font-size: clamp(1rem, 1.4vw, 1.125rem);
+      color: var(--muted); max-width: 54ch; line-height: 1.65;
+      margin-bottom: 2.5rem;
+      visibility: hidden;
+    }
+    .hero__actions {
+      display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+      visibility: hidden;
+    }
+
+    /* ── STAT COUNTERS ──────────────────────────────────── */
+    .hero__stats {
+      margin-top: 5.5rem; padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      visibility: hidden;
+    }
+    .stat__num {
+      font-family: var(--font-d);
+      font-size: clamp(2.25rem, 4vw, 3.5rem);
+      font-weight: 700; line-height: 1;
+      letter-spacing: -0.02em;
+      display: flex; align-items: baseline; gap: 0.1em;
+    }
+    .stat__unit { color: var(--cobalt); font-size: 0.58em; font-weight: 700; }
+    .stat__lbl {
+      margin-top: 0.375rem;
+      font-size: 0.8125rem; color: var(--muted); font-weight: 400;
+    }
+
+    /* ── PROOF BAR ──────────────────────────────────────── */
+    .proof {
+      padding: 4.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .proof__inner { text-align: center; }
+    .proof__logos {
+      display: flex; align-items: center; justify-content: center;
+      gap: 3.5rem; flex-wrap: wrap; margin-top: 2rem;
+    }
+    .proof__logo {
+      font-family: var(--font-d);
+      font-size: 1.0625rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted); opacity: 0.4;
+      transition: opacity 0.25s;
+    }
+    .proof__logo:hover { opacity: 0.8; }
+
+    /* ── SERVICES ───────────────────────────────────────── */
+    .services { padding: 8rem 0; }
+    .services__head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 3rem; margin-bottom: 4rem;
+    }
+    .services__hl {
+      font-family: var(--font-d);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700; line-height: 1.0;
+      letter-spacing: -0.01em; max-width: 18ch;
+    }
+    .services__sub {
+      max-width: 38ch;
+      font-size: 0.9375rem; color: var(--muted); line-height: 1.65;
+    }
+    .services__grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+      gap: 1px; background: var(--border);
+    }
+    .svc {
+      background: var(--bg);
+      padding: 2.5rem 2rem 2rem;
+      position: relative; overflow: hidden;
+      transition: background 0.3s var(--ease-quart);
+    }
+    .svc::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--cobalt);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.45s var(--ease-expo);
+    }
+    .svc:hover { background: var(--surface); }
+    .svc:hover::after { transform: scaleX(1); }
+    .svc__icon { width: 36px; height: 36px; color: var(--cobalt); margin-bottom: 1.625rem; }
+    .svc__title {
+      font-family: var(--font-d);
+      font-size: 1.375rem; font-weight: 700; letter-spacing: 0.01em;
+      margin-bottom: 0.75rem;
+    }
+    .svc__body { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+    .svc__more {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      margin-top: 1.625rem;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--cobalt); letter-spacing: 0.04em;
+      transition: gap 0.2s var(--ease-quart);
+    }
+    .svc:hover .svc__more { gap: 0.625rem; }
+
+    /* ── NETWORK ────────────────────────────────────────── */
+    .network {
+      padding: 8rem 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .network__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 7rem; align-items: center;
+    }
+    .network__hl {
+      font-family: var(--font-d);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700; line-height: 1.0;
+      letter-spacing: -0.01em; margin-bottom: 1.25rem;
+    }
+    .network__body {
+      font-size: 0.9375rem; color: var(--muted); line-height: 1.7; margin-bottom: 2.25rem;
+    }
+    .metrics {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      border: 1px solid var(--border); background: var(--border);
+    }
+    .metric {
+      background: var(--bg); padding: 1.25rem 1.5rem;
+    }
+    .metric__val {
+      font-family: var(--font-d);
+      font-size: 2rem; font-weight: 700; line-height: 1;
+      color: var(--amber);
+    }
+    .metric__lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* Globe */
+    .globe { position: relative; width: 100%; aspect-ratio: 1; }
+    .globe svg { width: 100%; height: 100%; }
+
+    /* ── DIFFERENTIATORS ────────────────────────────────── */
+    .diff { padding: 8rem 0; }
+    .diff__head { margin-bottom: 5rem; }
+    .diff__hl {
+      font-family: var(--font-d);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700; line-height: 1.0;
+      letter-spacing: -0.01em; max-width: 22ch; margin-top: 1rem;
+    }
+    .diff__list {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;
+    }
+    .diff-item {
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .diff-item__tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .diff-item__tag::before {
+      content: '';
+      display: block; width: 20px; height: 2px;
+      background: var(--cobalt);
+    }
+    .diff-item__title {
+      font-family: var(--font-d);
+      font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em;
+      margin-bottom: 0.875rem;
+    }
+    .diff-item__body { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── CTA STRIP ──────────────────────────────────────── */
+    .cta-strip {
+      padding: 8rem 0;
+      background: linear-gradient(160deg, oklch(0.11 0.035 228) 0%, oklch(0.08 0.000 0) 55%);
+      border-top: 1px solid oklch(0.22 0.050 228);
+    }
+    .cta-strip__inner { text-align: center; }
+    .cta-strip__hl {
+      font-family: var(--font-d);
+      font-size: clamp(2.5rem, 5vw, 4.75rem);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -0.025em; text-wrap: balance;
+      margin: 1.25rem 0;
+    }
+    .cta-strip__sub {
+      font-size: 1.0625rem; color: var(--muted);
+      max-width: 46ch; margin: 0 auto 2.5rem;
+    }
+    .cta-strip__actions {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    .footer { padding: 4.5rem 0 0; border-top: 1px solid var(--border); }
+    .footer__cols {
+      display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 3rem;
+    }
+    .footer__brand-name {
+      font-family: var(--font-d);
+      font-size: 1.125rem; font-weight: 800; letter-spacing: 0.10em;
+      margin-bottom: 0.75rem;
+    }
+    .footer__brand-name em { color: var(--cobalt); font-style: normal; }
+    .footer__tagline {
+      font-size: 0.875rem; color: var(--muted);
+      line-height: 1.6; max-width: 30ch;
+    }
+    .footer__col-head {
+      font-size: 0.6875rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.25rem;
+    }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 0.625rem; }
+    .footer__links a {
+      font-size: 0.875rem; color: var(--dim); transition: color 0.2s;
+    }
+    .footer__links a:hover { color: var(--ink); }
+    .footer__bar {
+      margin-top: 3rem; padding: 1.5rem 0;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer__copy { font-size: 0.8125rem; color: var(--muted); }
+    .footer__legal { display: flex; gap: 1.5rem; }
+    .footer__legal a { font-size: 0.8125rem; color: var(--muted); transition: color 0.2s; }
+    .footer__legal a:hover { color: var(--dim); }
+
+    /* ── PULSE ANIMATION (globe) ────────────────────────── */
+    @keyframes pulse-ring {
+      0%   { opacity: 0.5; r: 10; }
+      100% { opacity: 0;   r: 28; }
+    }
+    .pulse-ring { animation: pulse-ring 2.4s var(--ease-quart) infinite; }
+    .pulse-ring-2 { animation: pulse-ring 2.4s var(--ease-quart) 0.8s infinite; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .services__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .nav__links { display: none; }
+      .hero__stats { grid-template-columns: repeat(2, 1fr); }
+      .services__head { flex-direction: column; align-items: flex-start; }
+      .network__grid { grid-template-columns: 1fr; gap: 3.5rem; }
+      .diff__list { grid-template-columns: 1fr; gap: 2rem; }
+      .footer__cols { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding-bottom: 5rem; }
+      .services__grid { grid-template-columns: 1fr; }
+      .hero__stats { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+      .cta-strip__actions { flex-direction: column; align-items: stretch; }
+      .footer__cols { grid-template-columns: 1fr; }
+    }
+
+    /* ── REDUCED MOTION ─────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero__kicker, .hero__sub, .hero__actions, .hero__stats {
+        visibility: visible !important; opacity: 1 !important;
+      }
+      .hero__headline .line-inner { transform: translateY(0) !important; }
+      .pulse-ring, .pulse-ring-2 { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═══════════════════════════════════════════ -->
+  <nav class="nav" id="nav">
+    <div class="nav__brand">TRANS<em>LOG</em></div>
+    <ul class="nav__links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#network">Network</a></li>
+      <li><a href="#about">Why Us</a></li>
+      <li><a href="#">Careers</a></li>
+    </ul>
+    <a href="#contact" class="nav__cta">
+      Book a Shipment
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </nav>
+
+  <!-- ═══ HERO ═══════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero__glow"></div>
+    <div class="hero__inner wrap">
+      <div class="hero__kicker label">
+        <span class="hero__kicker-dot"></span>
+        Intercontinental Freight Solutions
+      </div>
+
+      <h1 class="hero__headline">
+        <span class="line"><span class="line-inner">MOVE ANYTHING.</span></span>
+        <span class="line"><span class="line-inner accent">ANYWHERE.</span></span>
+        <span class="line"><span class="line-inner">ON TIME.</span></span>
+      </h1>
+
+      <p class="hero__sub">
+        TRANSLOG connects manufacturers, distributors, and enterprises
+        to a global freight network across 190 countries — air, ocean,
+        rail, and road — with precision tracking from origin to final mile.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#contact" class="btn btn-primary">
+          Get a Quote
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#services" class="btn btn-ghost">Explore Services</a>
+      </div>
+
+      <!-- STATS -->
+      <div class="hero__stats">
+        <div class="stat">
+          <div class="stat__num">
+            <span class="counter" data-target="190">0</span>
+            <span class="stat__unit">+</span>
+          </div>
+          <div class="stat__lbl">Countries served</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">
+            <span class="counter" data-target="2400">0</span>
+            <span class="stat__unit">+</span>
+          </div>
+          <div class="stat__lbl">Routes operated</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">
+            <span class="counter" data-target="98">0</span>
+            <span class="stat__unit">%</span>
+          </div>
+          <div class="stat__lbl">On-time delivery rate</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">
+            <span class="counter" data-target="14">0</span>
+            <span class="stat__unit">M+</span>
+          </div>
+          <div class="stat__lbl">Shipments delivered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CLIENTS ═════════════════════════════════════════ -->
+  <div class="proof">
+    <div class="proof__inner wrap">
+      <p class="label">Trusted by world-class supply chains</p>
+      <div class="proof__logos">
+        <span class="proof__logo">Meridian Group</span>
+        <span class="proof__logo">Axiom Pharma</span>
+        <span class="proof__logo">NordCargo</span>
+        <span class="proof__logo">Pacifica Trade</span>
+        <span class="proof__logo">ELCO Industries</span>
+        <span class="proof__logo">Orbis Retail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SERVICES ════════════════════════════════════════ -->
+  <section class="services" id="services">
+    <div class="wrap">
+      <div class="services__head">
+        <h2 class="services__hl gsap-reveal">Four modes.<br>One network.</h2>
+        <p class="services__sub gsap-reveal">Whether it moves by air, sea, rail, or road — TRANSLOG operates the infrastructure so you don't have to.</p>
+      </div>
+      <div class="services__grid">
+
+        <div class="svc gsap-card">
+          <svg class="svc__icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M2 26 C8 22 14 14 22 16 C28 17 32 22 34 26" stroke-linecap="round"/>
+            <path d="M18 16 L22 8 L28 8 L30 16" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="6"  cy="28" r="2"/>
+            <circle cx="30" cy="28" r="2"/>
+            <path d="M2 28 h32" stroke-linecap="round"/>
+          </svg>
+          <h3 class="svc__title">Air Freight</h3>
+          <p class="svc__body">Time-critical cargo moved on dedicated and chartered aircraft across 6 continents. Express, deferred, and charter options with 24h booking.</p>
+          <a href="#" class="svc__more">
+            Learn more
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <div class="svc gsap-card">
+          <svg class="svc__icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="3" y="17" width="30" height="12" rx="1.5"/>
+            <path d="M3 21 h30"/>
+            <path d="M12 17 v12 M24 17 v12"/>
+            <circle cx="8"  cy="32" r="2" fill="currentColor" stroke="none"/>
+            <circle cx="28" cy="32" r="2" fill="currentColor" stroke="none"/>
+            <path d="M3 17 L6 10 h24 l3 7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="svc__title">Ocean Freight</h3>
+          <p class="svc__body">Full-container and LCL shipments across every major trade lane — Pacific, Atlantic, and Indian Ocean corridors.</p>
+          <a href="#" class="svc__more">
+            Learn more
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <div class="svc gsap-card">
+          <svg class="svc__icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="2"  y="20" width="18" height="9" rx="1"/>
+            <rect x="20" y="14" width="14" height="15" rx="1"/>
+            <circle cx="7"  cy="32" r="2" fill="currentColor" stroke="none"/>
+            <circle cx="17" cy="32" r="2" fill="currentColor" stroke="none"/>
+            <circle cx="29" cy="32" r="2" fill="currentColor" stroke="none"/>
+            <path d="M2 24 h32" stroke-linecap="round"/>
+          </svg>
+          <h3 class="svc__title">Rail &amp; Road</h3>
+          <p class="svc__body">Pan-continental road and rail corridors linking Europe, Asia, and the Americas with intermodal precision and door-to-door coverage.</p>
+          <a href="#" class="svc__more">
+            Learn more
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <div class="svc gsap-card">
+          <svg class="svc__icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M18 4 C11 4 6 10 6 16 c0 9 12 18 12 18 s12-9 12-18 c0-6-5-12-12-12z"/>
+            <circle cx="18" cy="16" r="4"/>
+          </svg>
+          <h3 class="svc__title">Last Mile</h3>
+          <p class="svc__body">Urban and suburban delivery infrastructure in 80+ metropolitan areas — integrated tracking and verified proof of delivery.</p>
+          <a href="#" class="svc__more">
+            Learn more
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ NETWORK ═════════════════════════════════════════ -->
+  <section class="network" id="network">
+    <div class="wrap">
+      <div class="network__grid">
+
+        <div class="gsap-reveal">
+          <p class="label" style="margin-bottom:1rem">Global Infrastructure</p>
+          <h2 class="network__hl">A network built on 40 years of precision.</h2>
+          <p class="network__body">From transpacific ocean lanes to final-mile delivery in Lagos and São Paulo, the TRANSLOG network doesn't leave gaps. We own the infrastructure at the critical junctions where most freight breaks down.</p>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric__val">87</div>
+              <div class="metric__lbl">Owned terminals</div>
+            </div>
+            <div class="metric">
+              <div class="metric__val">340+</div>
+              <div class="metric__lbl">Partner carriers</div>
+            </div>
+            <div class="metric">
+              <div class="metric__val">24/7</div>
+              <div class="metric__lbl">Live tracking</div>
+            </div>
+            <div class="metric">
+              <div class="metric__val">4h</div>
+              <div class="metric__lbl">Avg. response SLA</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Globe SVG -->
+        <div class="globe gsap-reveal">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="gGlobe" cx="40%" cy="38%" r="60%">
+                <stop offset="0%"   stop-color="oklch(0.17 0.000 0)"/>
+                <stop offset="100%" stop-color="oklch(0.09 0.000 0)"/>
+              </radialGradient>
+              <radialGradient id="gGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"   stop-color="oklch(0.60 0.185 228)" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="oklch(0.60 0.185 228)" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <!-- Ambient glow -->
+            <circle cx="200" cy="200" r="195" fill="url(#gGlow)"/>
+            <!-- Sphere -->
+            <circle cx="200" cy="200" r="165" fill="url(#gGlobe)" stroke="oklch(0.24 0.000 0)" stroke-width="1"/>
+            <!-- Latitude rings -->
+            <ellipse cx="200" cy="200" rx="165" ry="42"  fill="none" stroke="oklch(0.20 0.000 0)" stroke-width="0.8"/>
+            <ellipse cx="200" cy="200" rx="165" ry="95"  fill="none" stroke="oklch(0.20 0.000 0)" stroke-width="0.8"/>
+            <ellipse cx="200" cy="200" rx="165" ry="140" fill="none" stroke="oklch(0.20 0.000 0)" stroke-width="0.8"/>
+            <!-- Equator -->
+            <line x1="35" y1="200" x2="365" y2="200" stroke="oklch(0.26 0.000 0)" stroke-width="1"/>
+            <!-- Longitude rings -->
+            <ellipse cx="200" cy="200" rx="42"  ry="165" fill="none" stroke="oklch(0.20 0.000 0)" stroke-width="0.8"/>
+            <ellipse cx="200" cy="200" rx="95"  ry="165" fill="none" stroke="oklch(0.20 0.000 0)" stroke-width="0.8"/>
+            <ellipse cx="200" cy="200" rx="140" ry="165" fill="none" stroke="oklch(0.20 0.000 0)" stroke-width="0.8"/>
+            <!-- Route: Europe → Asia (cobalt) -->
+            <path d="M96 158 Q200 118 316 175" fill="none"
+                  stroke="oklch(0.60 0.185 228)" stroke-width="1.6"
+                  stroke-dasharray="5 3.5" opacity="0.85"/>
+            <!-- Route: Americas → Europe (amber) -->
+            <path d="M72 210 Q165 255 298 222" fill="none"
+                  stroke="oklch(0.82 0.120 75)" stroke-width="1.2"
+                  stroke-dasharray="4 4" opacity="0.75"/>
+            <!-- Route: Asia → Oceania (cobalt dim) -->
+            <path d="M290 185 Q310 240 280 295" fill="none"
+                  stroke="oklch(0.60 0.185 228)" stroke-width="1"
+                  stroke-dasharray="3 4" opacity="0.5"/>
+            <!-- Hub dots -->
+            <circle cx="96"  cy="158" r="4" fill="oklch(0.60 0.185 228)"/>
+            <circle cx="316" cy="175" r="4" fill="oklch(0.60 0.185 228)"/>
+            <circle cx="72"  cy="210" r="3.5" fill="oklch(0.82 0.120 75)"/>
+            <circle cx="298" cy="222" r="3.5" fill="oklch(0.82 0.120 75)"/>
+            <circle cx="280" cy="295" r="3"   fill="oklch(0.60 0.185 228)" opacity="0.7"/>
+            <!-- Central hub (animated pulse) -->
+            <circle cx="200" cy="192" r="5.5" fill="oklch(0.60 0.185 228)"/>
+            <circle class="pulse-ring"  cx="200" cy="192" r="10" fill="none" stroke="oklch(0.60 0.185 228)" stroke-width="1.2"/>
+            <circle class="pulse-ring-2" cx="200" cy="192" r="10" fill="none" stroke="oklch(0.60 0.185 228)" stroke-width="0.8"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DIFFERENTIATORS ═════════════════════════════════ -->
+  <section class="diff" id="about">
+    <div class="wrap">
+      <div class="diff__head">
+        <p class="label">Why TRANSLOG</p>
+        <h2 class="diff__hl gsap-reveal">Logistics is not a commodity. Our engineering proves it.</h2>
+      </div>
+      <div class="diff__list">
+
+        <div class="diff-item gsap-reveal">
+          <div class="diff-item__tag label">Real-Time Visibility</div>
+          <h3 class="diff-item__title">Event-level tracking. Always.</h3>
+          <p class="diff-item__body">Not batch updates — live telemetry from carrier handoffs, port crossings, and customs holds, surfaced in a single dashboard. You never refresh to find out where your cargo is.</p>
+        </div>
+
+        <div class="diff-item gsap-reveal">
+          <div class="diff-item__tag label">Dedicated Operations</div>
+          <h3 class="diff-item__title">A team, not a portal.</h3>
+          <p class="diff-item__body">Each enterprise account gets a dedicated operations manager with regional expertise and a 4-hour response SLA around the clock. We pick up when it matters.</p>
+        </div>
+
+        <div class="diff-item gsap-reveal">
+          <div class="diff-item__tag label">Customs &amp; Compliance</div>
+          <h3 class="diff-item__title">In-house trade compliance.</h3>
+          <p class="diff-item__body">Specialists embedded in 18 countries handle duties, tariffs, and regulatory changes before they become your problem — or your delay.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA STRIP ════════════════════════════════════════ -->
+  <section class="cta-strip" id="contact">
+    <div class="cta-strip__inner wrap-s">
+      <p class="label" style="color: oklch(0.70 0.130 228)">Get Started</p>
+      <h2 class="cta-strip__hl gsap-reveal">
+        Your cargo. Our network.<br>Zero guesswork.
+      </h2>
+      <p class="cta-strip__sub gsap-reveal">Tell us what moves. We'll tell you how fast, how much, and exactly where it is the whole way there.</p>
+      <div class="cta-strip__actions gsap-reveal">
+        <a href="#" class="btn btn-primary" style="padding:.9375rem 2.25rem;font-size:1rem">
+          Book a Consultation
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="btn btn-ghost" style="padding:.9375rem 2rem;font-size:1rem;border-color:oklch(0.28 0.060 228)">
+          View Case Studies
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__cols">
+        <div>
+          <div class="footer__brand-name">TRANS<em>LOG</em></div>
+          <p class="footer__tagline">Intercontinental logistics infrastructure for enterprises that move the world's goods.</p>
+        </div>
+        <div>
+          <p class="footer__col-head">Services</p>
+          <ul class="footer__links">
+            <li><a href="#">Air Freight</a></li>
+            <li><a href="#">Ocean Freight</a></li>
+            <li><a href="#">Rail &amp; Road</a></li>
+            <li><a href="#">Last Mile</a></li>
+            <li><a href="#">Customs Brokerage</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-head">Company</p>
+          <ul class="footer__links">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Network</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer__col-head">Resources</p>
+          <ul class="footer__links">
+            <li><a href="#">Track a Shipment</a></li>
+            <li><a href="#">Rate Calculator</a></li>
+            <li><a href="#">Case Studies</a></li>
+            <li><a href="#">Compliance Guide</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bar">
+        <p class="footer__copy">© 2026 TRANSLOG Logistics Group. All rights reserved.</p>
+        <div class="footer__legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ SCRIPTS ══════════════════════════════════════════ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── NAV scroll state ─────────────────────────────── */
+    ScrollTrigger.create({
+      start: 'top -72',
+      onUpdate: s => document.getElementById('nav').classList.toggle('scrolled', s.progress > 0)
+    });
+
+    /* ── HERO entrance ────────────────────────────────── */
+    const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+    heroTl
+      // Kicker
+      .set('.hero__kicker', { visibility: 'visible' })
+      .from('.hero__kicker', { opacity: 0, y: 14, duration: 0.75 }, 0.25)
+
+      // Headline lines
+      .to('.hero__headline .line-inner', {
+        y: '0%',
+        duration: 1.0,
+        stagger: 0.08,
+        ease: 'power4.out'
+      }, 0.35)
+
+      // Sub + actions
+      .set(['.hero__sub', '.hero__actions'], { visibility: 'visible' })
+      .from('.hero__sub',    { opacity: 0, y: 14, duration: 0.75 }, '-=0.55')
+      .from('.hero__actions', { opacity: 0, y: 14, duration: 0.75 }, '-=0.6')
+
+      // Stats row
+      .set('.hero__stats', { visibility: 'visible' })
+      .from('.hero__stats', { opacity: 0, y: 20, duration: 0.8 }, '-=0.5');
+
+    /* ── COUNTER animation ────────────────────────────── */
+    let countersRan = false;
+    ScrollTrigger.create({
+      trigger: '.hero__stats',
+      start: 'top 92%',
+      onEnter() {
+        if (countersRan) return;
+        countersRan = true;
+        document.querySelectorAll('.counter').forEach(el => {
+          const end = +el.dataset.target;
+          gsap.to({ n: 0 }, {
+            n: end,
+            duration: 2.2,
+            ease: 'power2.out',
+            delay: 0.15,
+            onUpdate() {
+              el.textContent = Math.round(this.targets()[0].n).toLocaleString();
+            }
+          });
+        });
+      }
+    });
+
+    /* ── Parallax on hero glow ────────────────────────── */
+    gsap.to('.hero__glow', {
+      y: -120,
+      ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
+    });
+
+    /* ── Generic scroll reveals ───────────────────────── */
+    gsap.utils.toArray('.gsap-reveal').forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 36 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    /* ── Service card stagger ─────────────────────────── */
+    gsap.utils.toArray('.gsap-card').forEach((card, i) => {
+      gsap.fromTo(card,
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.75, ease: 'power3.out',
+          delay: i * 0.07,
+          scrollTrigger: { trigger: '.services__grid', start: 'top 86%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    /* ── Proof logos fade ─────────────────────────────── */
+    gsap.fromTo('.proof__logo',
+      { opacity: 0, y: 12 },
+      {
+        opacity: 0.4, y: 0,
+        duration: 0.6, stagger: 0.07, ease: 'power2.out',
+        scrollTrigger: { trigger: '.proof', start: 'top 88%' }
+      }
+    );
+  </script>
+</body>
+</html>
