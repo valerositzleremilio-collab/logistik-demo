@@ -10,19 +10,19 @@
   <style>
     /* ── TOKENS ─────────────────────────────────────────── */
     :root {
-      --bg:          oklch(0.08 0.000   0);
-      --surface:     oklch(0.12 0.000   0);
-      --surface-hi:  oklch(0.17 0.000   0);
+      --bg:          oklch(0.11 0.045 243);
+      --surface:     oklch(0.15 0.038 243);
+      --surface-hi:  oklch(0.20 0.030 243);
       --ink:         oklch(0.95 0.000   0);
       --muted:       oklch(0.50 0.000   0);
       --dim:         oklch(0.65 0.000   0);
-      --cobalt:      oklch(0.60 0.185 228);
-      --cobalt-hi:   oklch(0.67 0.185 228);
-      --cobalt-lo:   oklch(0.35 0.130 228);
-      --cobalt-10:   oklch(0.60 0.185 228 / 0.10);
+      --cobalt:      oklch(0.89 0.175  96);
+      --cobalt-hi:   oklch(0.94 0.145  96);
+      --cobalt-lo:   oklch(0.55 0.120  96);
+      --cobalt-10:   oklch(0.89 0.175  96 / 0.10);
       --amber:       oklch(0.82 0.120  75);
-      --border:      oklch(0.20 0.000   0);
-      --border-hi:   oklch(0.26 0.000   0);
+      --border:      oklch(0.24 0.022 243);
+      --border-hi:   oklch(0.30 0.018 243);
       --font-d:      'Barlow Condensed', sans-serif;
       --font-b:      'Barlow', sans-serif;
       --ease-quart:  cubic-bezier(0.25, 1, 0.5,  1);
@@ -73,7 +73,7 @@
       transition: background 0.35s var(--ease-quart), border-color 0.35s;
     }
     .nav.scrolled {
-      background: oklch(0.08 0.000 0 / 0.92);
+      background: oklch(0.11 0.045 243 / 0.92);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom-color: var(--border);
@@ -110,11 +110,15 @@
       display: inline-flex; align-items: center; gap: 0.625rem;
       padding: 0.875rem 2rem; border-radius: 4px;
       font-family: var(--font-b); font-size: 0.9375rem; font-weight: 600;
-      transition: background 0.2s var(--ease-quart), transform 0.15s var(--ease-quart),
-                  border-color 0.2s, color 0.2s;
+      transition: background 0.3s var(--ease-quart), transform 0.3s var(--ease-quart),
+                  border-color 0.3s, color 0.3s, box-shadow 0.3s;
     }
-    .btn-primary { background: var(--cobalt); color: #fff; }
-    .btn-primary:hover { background: var(--cobalt-hi); transform: translateY(-2px); }
+    .btn-primary { background: var(--cobalt); color: oklch(0.10 0.045 243); }
+    .btn-primary:hover {
+      background: var(--cobalt-hi);
+      transform: scale(1.02) translateY(-1px);
+      box-shadow: 0 8px 28px oklch(0.89 0.175 96 / 0.28);
+    }
     .btn-primary:active { transform: scale(0.97); }
     .btn-primary svg, .btn-ghost svg { transition: transform 0.2s var(--ease-quart); }
     .btn-primary:hover svg, .btn-ghost:hover svg { transform: translateX(4px); }
@@ -122,32 +126,60 @@
       background: transparent; color: var(--muted);
       border: 1px solid var(--border-hi);
     }
-    .btn-ghost:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-1px); }
+    .btn-ghost:hover {
+      border-color: var(--cobalt); color: var(--cobalt);
+      transform: scale(1.02);
+      box-shadow: 0 0 18px oklch(0.89 0.175 96 / 0.10);
+    }
     .btn-ghost:active { transform: scale(0.97); }
 
     /* ── HERO (VIDEO) ───────────────────────────────────── */
+    @keyframes ken-burns {
+      0%   { transform: scale(1.00); }
+      100% { transform: scale(1.07); }
+    }
     .hero {
       position: relative;
       height: 100dvh;
       overflow: hidden;
     }
     .hero__video {
-      position: absolute; inset: 0;
+      position: absolute; inset: 0; z-index: 0;
       width: 100%; height: 100%;
       object-fit: cover;
       pointer-events: none;
+      animation: ken-burns 25s ease-out forwards;
+      transform-origin: center center;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: radial-gradient(ellipse at center, transparent 35%, oklch(0.07 0.035 243 / 0.70) 100%);
+      pointer-events: none;
     }
     .hero__overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, oklch(0.08 0 0) 0%, transparent 60%);
+      position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(to top, oklch(0.11 0.045 243) 0%, transparent 60%);
       opacity: 0; pointer-events: none;
       will-change: opacity;
     }
     .hero__reveal {
-      position: absolute; bottom: 8rem; left: 0; right: 0;
+      position: absolute; bottom: 8rem; left: 0; right: 0; z-index: 3;
+      display: flex; justify-content: center; align-items: center;
       opacity: 0; pointer-events: none;
-      text-align: center; padding: 0 2rem;
+      padding: 0 2rem;
       will-change: transform, opacity;
+    }
+    .hero__reveal-glass {
+      background: oklch(0.11 0.045 243 / 0.52);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid oklch(0.89 0.175 96 / 0.30);
+      box-shadow: 0 0 36px oklch(0.89 0.175 96 / 0.10),
+                  inset 0 1px 0 oklch(0.89 0.175 96 / 0.08);
+      border-radius: 8px;
+      padding: 2.5rem 3.5rem;
+      text-align: center;
     }
     .hero__reveal-headline {
       font-family: var(--font-d);
@@ -155,6 +187,9 @@
       font-weight: 800; line-height: 0.92;
       letter-spacing: -0.025em;
       color: var(--ink); text-wrap: balance;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero__video { animation: none; }
     }
 
     /* ── PROOF BAR ──────────────────────────────────────── */
@@ -321,7 +356,7 @@
     .gp-close {
       background: none; border: none;
       color: var(--muted); line-height: 1;
-      padding: 2px; cursor: none;
+      padding: 2px; cursor: pointer;
       transition: color 0.2s;
       flex-shrink: 0;
     }
@@ -384,8 +419,8 @@
     /* ── CTA STRIP ──────────────────────────────────────── */
     .cta-strip {
       padding: 6rem 0;
-      background: linear-gradient(160deg, oklch(0.11 0.035 228) 0%, oklch(0.08 0.000 0) 55%);
-      border-top: 1px solid oklch(0.22 0.050 228);
+      background: linear-gradient(160deg, oklch(0.15 0.025 96) 0%, oklch(0.11 0.045 243) 55%);
+      border-top: 1px solid oklch(0.28 0.045 96);
     }
     .cta-strip__inner { text-align: center; }
     .cta-strip__hl {
@@ -499,14 +534,16 @@
            muted playsinline preload="auto" aria-hidden="true"></video>
     <div class="hero__overlay" aria-hidden="true"></div>
     <div class="hero__reveal" aria-hidden="true">
-      <p class="hero__reveal-headline">MOVE ANYTHING.<br>ANYWHERE.<br>ON TIME.</p>
+      <div class="hero__reveal-glass">
+        <p class="hero__reveal-headline">MOVE ANYTHING.<br>ANYWHERE.<br>ON TIME.</p>
+      </div>
     </div>
   </section>
 
   <!-- ═══ CLIENTS ══════════════════════════════════════ -->
   <div class="proof">
     <div class="proof__inner wrap">
-      <p class="label">Trusted by world-class supply chains</p>
+      <p class="label">Trusted by 140+ enterprise supply chains globally</p>
       <div class="proof__logos">
         <span class="proof__logo">Meridian Group</span>
         <span class="proof__logo">Axiom Pharma</span>
@@ -522,8 +559,8 @@
   <section class="services" id="services">
     <div class="wrap">
       <div class="services__head">
-        <h2 class="services__hl gsap-reveal">Four modes.<br>One network.</h2>
-        <p class="services__sub gsap-reveal">Whether it moves by air, sea, rail, or road — TRANSLOG operates the infrastructure so you don't have to.</p>
+        <h2 class="services__hl gsap-reveal">One provider.<br>Every mode.</h2>
+        <p class="services__sub gsap-reveal">Air, ocean, rail, road — fully integrated under one contract, one dashboard, one operations team. No broker handoffs.</p>
       </div>
       <div class="services__grid">
 
@@ -600,25 +637,25 @@
       <div class="network__grid">
 
         <div class="gsap-reveal">
-          <p class="label" style="margin-bottom:1rem">Global Infrastructure</p>
-          <h2 class="network__hl gsap-split">A network built on 40 years of precision.</h2>
-          <p class="network__body">From transpacific ocean lanes to final-mile delivery in Lagos and São Paulo, the TRANSLOG network doesn't leave gaps. We own the infrastructure at the critical junctions where most freight breaks down.</p>
+          <p class="label" style="margin-bottom:1rem">The Infrastructure Layer</p>
+          <h2 class="network__hl gsap-split">Infrastructure at the junctions where freight breaks.</h2>
+          <p class="network__body">Most freight problems happen at transitions — the handoff from port to rail, from customs to final mile. TRANSLOG owns those junctions in 87 terminals across 6 continents. We don't sub out the hard parts.</p>
           <div class="metrics">
             <div class="metric">
               <div class="metric__val">87</div>
-              <div class="metric__lbl">Owned terminals</div>
+              <div class="metric__lbl">terminals owned</div>
             </div>
             <div class="metric">
               <div class="metric__val">340+</div>
-              <div class="metric__lbl">Partner carriers</div>
+              <div class="metric__lbl">vetted carrier partners</div>
             </div>
             <div class="metric">
               <div class="metric__val">24/7</div>
-              <div class="metric__lbl">Live tracking</div>
+              <div class="metric__lbl">live event tracking</div>
             </div>
             <div class="metric">
               <div class="metric__val">4h</div>
-              <div class="metric__lbl">Avg. response SLA</div>
+              <div class="metric__lbl">response SLA, guaranteed</div>
             </div>
           </div>
         </div>
@@ -643,7 +680,7 @@
               <span class="gp-routes-lbl">active routes</span>
             </div>
             <p class="gp-info">Europe's largest port — primary EU import gateway.</p>
-            <a href="#contact" class="gp-cta">Request a route &#8594;</a>
+            <a href="#contact" class="gp-cta">Open a lane &#8594;</a>
           </div>
         </div>
 
@@ -656,26 +693,26 @@
     <div class="wrap">
       <div class="diff__head">
         <p class="label">Why TRANSLOG</p>
-        <h2 class="diff__hl gsap-split">Logistics is not a commodity. Our engineering proves it.</h2>
+        <h2 class="diff__hl gsap-split">Logistics is not a commodity. Here is the proof.</h2>
       </div>
       <div class="diff__list">
 
         <div class="diff-item gsap-reveal">
           <div class="diff-item__tag label">Real-Time Visibility</div>
           <h3 class="diff-item__title">Event-level tracking. Always.</h3>
-          <p class="diff-item__body">Not batch updates — live telemetry from carrier handoffs, port crossings, and customs holds, surfaced in a single dashboard. You never refresh to find out where your cargo is.</p>
+          <p class="diff-item__body">Not batch updates — live telemetry on every handoff, port crossing, and customs hold. One dashboard. No refresh needed.</p>
         </div>
 
         <div class="diff-item gsap-reveal">
           <div class="diff-item__tag label">Dedicated Operations</div>
           <h3 class="diff-item__title">A team, not a portal.</h3>
-          <p class="diff-item__body">Each enterprise account gets a dedicated operations manager with regional expertise and a 4-hour response SLA around the clock. We pick up when it matters.</p>
+          <p class="diff-item__body">Each enterprise account gets a named operations manager with regional expertise and a 4-hour response SLA, 24/7. We answer the phone when it matters.</p>
         </div>
 
         <div class="diff-item gsap-reveal">
           <div class="diff-item__tag label">Customs &amp; Compliance</div>
           <h3 class="diff-item__title">In-house trade compliance.</h3>
-          <p class="diff-item__body">Specialists embedded in 18 countries handle duties, tariffs, and regulatory changes before they become your problem — or your delay.</p>
+          <p class="diff-item__body">Trade compliance specialists in 18 countries catch duty changes, tariff shifts, and regulatory updates before they reach your desk — or your schedule.</p>
         </div>
 
       </div>
@@ -685,20 +722,20 @@
   <!-- ═══ CTA STRIP ═════════════════════════════════════ -->
   <section class="cta-strip" id="contact">
     <div class="cta-strip__inner wrap-s">
-      <p class="label" style="color: oklch(0.70 0.130 228)">Get Started</p>
+      <p class="label" style="color: oklch(0.85 0.140 96)">Start a Conversation</p>
       <h2 class="cta-strip__hl gsap-reveal">
-        Your cargo. Our network.<br>Zero guesswork.
+        Ready to move?<br>So are we.
       </h2>
-      <p class="cta-strip__sub gsap-reveal">Tell us what moves. We'll tell you how fast, how much, and exactly where it is the whole way there.</p>
+      <p class="cta-strip__sub gsap-reveal">Send us a lane, a volume, and a timeline. We'll come back with a quote and an assigned ops team within 24 hours.</p>
       <div class="cta-strip__actions gsap-reveal">
         <a href="#" class="btn btn-primary" style="padding:.9375rem 2.25rem;font-size:1rem">
-          Book a Consultation
+          Talk to an Expert
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-        <a href="#" class="btn btn-ghost" style="padding:.9375rem 2rem;font-size:1rem;border-color:oklch(0.28 0.060 228)">
-          View Case Studies
+        <a href="#" class="btn btn-ghost" style="padding:.9375rem 2rem;font-size:1rem;border-color:oklch(0.28 0.060 96)">
+          See Real Routes
         </a>
       </div>
     </div>
@@ -760,7 +797,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
@@ -807,7 +843,7 @@
           start:   'top top',
           end:     '+=200%',
           pin:     true,
-          scrub:   true,
+          scrub:   1.2,
           onUpdate: function(self) {
             var dur = video.duration;
             if (dur && !isNaN(dur)) video.currentTime = self.progress * dur;
@@ -929,24 +965,23 @@
     });
 
     /* ── THREE.JS GLOBE ──────────────────────────────────── */
-    (async function initGlobe() {
-      const container = document.getElementById('globe-container');
+    (function initGlobe() {
+      var container = document.getElementById('globe-container');
       if (!container || typeof THREE === 'undefined') return;
 
-      const R = 1.85;
+      var R = 1.85;
+      var scene = new THREE.Scene();
 
-      const scene = new THREE.Scene();
-
-      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+      var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
       camera.position.set(0, 0.25, 5.6);
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
 
       function sizeRenderer() {
-        const w = container.clientWidth;
-        const h = container.clientHeight || container.clientWidth;
+        var w = container.clientWidth;
+        var h = container.clientHeight || w;
         renderer.setSize(w, h);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
@@ -954,7 +989,7 @@
       sizeRenderer();
       container.appendChild(renderer.domElement);
 
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      var controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping   = true;
       controls.dampingFactor   = 0.07;
       controls.enableZoom      = true;
@@ -965,29 +1000,54 @@
       controls.autoRotateSpeed = 0.5;
       controls.enablePan       = false;
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-      const dLight = new THREE.DirectionalLight(0x4488ff, 0.9);
-      dLight.position.set(5, 3, 5);
-      scene.add(dLight);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+      var sunLight = new THREE.DirectionalLight(0xfff5e0, 1.1);
+      sunLight.position.set(5, 3, 5);
+      scene.add(sunLight);
 
-      const sphereMat = new THREE.MeshPhongMaterial({
-        color: 0x060b17,
-        emissive: 0x09132a,
-        emissiveIntensity: 0.55,
-        shininess: 22,
-        specular: 0x1a3060,
+      /* ── Earth with NASA texture ── */
+      var loader = new THREE.TextureLoader();
+      var loadingEl = document.getElementById('globe-loading');
+
+      var earthMat = new THREE.MeshPhongMaterial({
+        shininess: 8,
+        specular: new THREE.Color(0x111111),
       });
-      scene.add(new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), sphereMat));
+      var earthMesh = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), earthMat);
+      scene.add(earthMesh);
 
-      const atmMat = new THREE.MeshPhongMaterial({
-        color: 0x0033cc, transparent: true, opacity: 0.04, side: THREE.FrontSide,
-      });
-      scene.add(new THREE.Mesh(new THREE.SphereGeometry(R + 0.14, 32, 32), atmMat));
+      loader.load(
+        'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+        function(tex) {
+          earthMat.map = tex;
+          earthMat.needsUpdate = true;
+          if (loadingEl) loadingEl.style.display = 'none';
+        }
+      );
+      loader.load(
+        'https://unpkg.com/three-globe/example/img/earth-topology.png',
+        function(tex) {
+          earthMat.bumpMap = tex;
+          earthMat.bumpScale = 0.04;
+          earthMat.needsUpdate = true;
+        }
+      );
 
+      /* ── Atmosphere ── */
+      scene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(R + 0.14, 32, 32),
+        new THREE.MeshPhongMaterial({ color: 0x2266ff, transparent: true, opacity: 0.07, side: THREE.FrontSide })
+      ));
+      scene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(R + 0.30, 32, 32),
+        new THREE.MeshPhongMaterial({ color: 0x4488ff, transparent: true, opacity: 0.03, side: THREE.BackSide })
+      ));
+
+      /* ── Coordinate helper ── */
       function ll2v(lat, lon, r) {
         r = (r === undefined) ? R : r;
-        const phi   = (90 - lat) * Math.PI / 180;
-        const theta = (lon + 180) * Math.PI / 180;
+        var phi   = (90 - lat) * Math.PI / 180;
+        var theta = (lon + 180) * Math.PI / 180;
         return new THREE.Vector3(
           -r * Math.sin(phi) * Math.cos(theta),
            r * Math.cos(phi),
@@ -995,52 +1055,7 @@
         );
       }
 
-      const borderMat = new THREE.LineBasicMaterial({ color: 0x1a6aff, transparent: true, opacity: 0.32 });
-
-      try {
-        const worldData = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
-        if (typeof topojson !== 'undefined') {
-          const borders = topojson.mesh(worldData, worldData.objects.countries, function(a, b) { return a !== b; });
-          const pts = [];
-          function processCoords(ring) {
-            for (let i = 0; i < ring.length - 1; i++) {
-              var lon1 = ring[i][0],   lat1 = ring[i][1];
-              var lon2 = ring[i+1][0], lat2 = ring[i+1][1];
-              if (Math.abs(lon2 - lon1) < 10 && Math.abs(lat2 - lat1) < 10) {
-                pts.push(ll2v(lat1, lon1, R + 0.007));
-                pts.push(ll2v(lat2, lon2, R + 0.007));
-              }
-            }
-          }
-          if (borders.type === 'LineString') {
-            processCoords(borders.coordinates);
-          } else if (borders.type === 'MultiLineString') {
-            borders.coordinates.forEach(processCoords);
-          }
-          if (pts.length > 0) {
-            scene.add(new THREE.LineSegments(
-              new THREE.BufferGeometry().setFromPoints(pts),
-              borderMat
-            ));
-          }
-        }
-      } catch (fetchErr) {
-        var gMat = new THREE.LineBasicMaterial({ color: 0x1a3a80, transparent: true, opacity: 0.22 });
-        [-60, -30, 0, 30, 60].forEach(function(lat) {
-          var pts = [];
-          for (var lon = -180; lon <= 180; lon += 3) pts.push(ll2v(lat, lon, R + 0.007));
-          scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gMat.clone()));
-        });
-        [-135, -90, -45, 0, 45, 90, 135].forEach(function(lon) {
-          var pts = [];
-          for (var lat = -90; lat <= 90; lat += 3) pts.push(ll2v(lat, lon, R + 0.007));
-          scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gMat.clone()));
-        });
-      }
-
-      var loadingEl = document.getElementById('globe-loading');
-      if (loadingEl) loadingEl.style.display = 'none';
-
+      /* ── Hub cities ── */
       var HUBS = [
         { name: 'Rotterdam',   lat: 51.90, lon:   4.50, routes: 280, region: 'Northern Europe',  info: "Europe's largest port — primary EU import gateway." },
         { name: 'Shanghai',    lat: 31.23, lon: 121.47, routes: 340, region: 'East Asia',         info: "World's busiest container port and Asia-Pacific hub." },
@@ -1056,70 +1071,55 @@
 
       var hitTargets = [];
       var dotMeshes  = [];
-      var hitMat     = new THREE.MeshBasicMaterial({ visible: false });
 
       HUBS.forEach(function(hub) {
-        var pos = ll2v(hub.lat, hub.lon, R);
         var dot = new THREE.Mesh(
-          new THREE.SphereGeometry(0.027, 10, 10),
-          new THREE.MeshBasicMaterial({ color: 0x3a8fff })
+          new THREE.SphereGeometry(0.030, 10, 10),
+          new THREE.MeshBasicMaterial({ color: 0xFFD700 })
         );
-        dot.position.copy(pos);
+        dot.position.copy(ll2v(hub.lat, hub.lon, R + 0.012));
         scene.add(dot);
         dotMeshes.push(dot);
 
         var hit = new THREE.Mesh(
-          new THREE.SphereGeometry(0.1, 8, 8),
+          new THREE.SphereGeometry(0.10, 8, 8),
           new THREE.MeshBasicMaterial({ visible: false })
         );
-        hit.position.copy(pos);
+        hit.position.copy(dot.position);
         hit.userData = { hub: hub, dot: dot };
         scene.add(hit);
         hitTargets.push(hit);
       });
 
+      /* ── Route arcs — gold ── */
       var ROUTES = [[0,1],[0,2],[0,3],[1,2],[2,3],[3,7],[4,1],[4,5],[1,8],[2,9],[5,7],[0,6]];
-      var arcMat  = new THREE.LineBasicMaterial({ color: 0x1a5aff, transparent: true, opacity: 0.42 });
+      var arcMat  = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.50 });
 
       var routeData = ROUTES.map(function(pair) {
         var from  = ll2v(HUBS[pair[0]].lat, HUBS[pair[0]].lon, R);
         var to    = ll2v(HUBS[pair[1]].lat, HUBS[pair[1]].lon, R);
         var mid   = from.clone().add(to).normalize().multiplyScalar(R + 0.72);
         var curve = new THREE.QuadraticBezierCurve3(from, mid, to);
-        var pts   = curve.getPoints(64);
-        scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), arcMat.clone()));
+        scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)), arcMat.clone()));
         return { curve: curve, progress: Math.random(), speed: 0.0007 + Math.random() * 0.0007 };
       });
 
-      var shipMat = new THREE.MeshBasicMaterial({ color: 0xe8b84b });
-      var ships   = routeData.map(function() {
-        var m = new THREE.Mesh(new THREE.SphereGeometry(0.02, 6, 6), shipMat.clone());
+      var ships = routeData.map(function() {
+        var m = new THREE.Mesh(
+          new THREE.SphereGeometry(0.022, 6, 6),
+          new THREE.MeshBasicMaterial({ color: 0xFFAA00 })
+        );
         scene.add(m);
         return m;
       });
 
-      var N = 160;
-      var pPos = new Float32Array(N * 3);
-      for (var i = 0; i < N; i++) {
-        var phi2   = Math.acos(2 * Math.random() - 1);
-        var theta2 = Math.random() * Math.PI * 2;
-        var r2     = R + 0.28 + Math.random() * 0.6;
-        pPos[i*3]   = r2 * Math.sin(phi2) * Math.cos(theta2);
-        pPos[i*3+1] = r2 * Math.cos(phi2);
-        pPos[i*3+2] = r2 * Math.sin(phi2) * Math.sin(theta2);
-      }
-      var pGeo = new THREE.BufferGeometry();
-      pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-      var particles = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0x2255ff, size: 0.013, transparent: true, opacity: 0.48 }));
-      scene.add(particles);
-
+      /* ── Popup ── */
       var popup    = document.getElementById('globe-popup');
       var gpCity   = popup.querySelector('.gp-city');
       var gpRegion = popup.querySelector('.gp-region');
       var gpRoutes = popup.querySelector('.gp-routes');
       var gpInfo   = popup.querySelector('.gp-info');
       var gpClose  = popup.querySelector('.gp-close');
-
       var hoveredDot = null;
 
       function showPopup(hub) {
@@ -1145,11 +1145,8 @@
         mouse2.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
         raycaster.setFromCamera(mouse2, camera);
         var hits = raycaster.intersectObjects(hitTargets);
-        if (hits.length > 0) {
-          showPopup(hits[0].object.userData.hub);
-        } else {
-          hidePopup();
-        }
+        if (hits.length > 0) showPopup(hits[0].object.userData.hub);
+        else hidePopup();
       });
 
       renderer.domElement.addEventListener('mousemove', function(e) {
@@ -1159,13 +1156,13 @@
         raycaster.setFromCamera(mouse2, camera);
         var hits = raycaster.intersectObjects(hitTargets);
         if (hoveredDot) {
-          hoveredDot.material.color.set(0x3a8fff);
+          hoveredDot.material.color.set(0xFFD700);
           hoveredDot = null;
           renderer.domElement.style.cursor = 'crosshair';
         }
         if (hits.length > 0) {
           var dot = hits[0].object.userData.dot;
-          dot.material.color.set(0xe8b84b);
+          dot.material.color.set(0xFF8800);
           hoveredDot = dot;
           renderer.domElement.style.cursor = 'pointer';
         }
@@ -1182,7 +1179,6 @@
             r.progress = (r.progress + r.speed) % 1;
             ships[idx].position.copy(r.curve.getPoint(r.progress));
           });
-          particles.rotation.y += 0.00028;
         }
         controls.update();
         renderer.render(scene, camera);
@@ -1190,12 +1186,8 @@
       animate();
 
       var io = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting) {
-          if (!rafId) animate();
-        } else {
-          cancelAnimationFrame(rafId);
-          rafId = null;
-        }
+        if (entries[0].isIntersecting) { if (!rafId) animate(); }
+        else { cancelAnimationFrame(rafId); rafId = null; }
       }, { threshold: 0.1 });
       io.observe(container);
 
