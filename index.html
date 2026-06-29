@@ -1009,6 +1009,7 @@
         min-width: unset;
         flex-shrink: unset;
       }
+      .quote-panel { max-height: 100dvh; }
     }
 
     /* ── Services horizontal scroll (tablet + mobile) ─────── */
@@ -1436,9 +1437,10 @@
       bottom: 0;
       z-index: 1001;
       width: min(480px, 100vw);
+      max-height: 100vh;
       background: var(--navy);
       border-left: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 2.5rem;
+      padding: 2.5rem 2.5rem 2rem;
       display: flex;
       flex-direction: column;
       gap: 0;
