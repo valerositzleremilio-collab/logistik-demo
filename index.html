@@ -95,20 +95,118 @@
         0 4px 32px rgba(11, 24, 41, 0.06);
     }
 
+    /* Nav inner — 3-column grid: Menu | Logo | CTA */
     .nav__inner {
       height: 100%;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
     }
 
-    /* Logo */
+    /* Left slot — Menu trigger + dropdown */
+    .nav__menu {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .nav__menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: rgba(255, 255, 255, 0.92);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.50);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: color 0.25s;
+    }
+    .nav__menu-btn:hover { color: var(--white); }
+    .nav.is-scrolled .nav__menu-btn {
+      color: var(--navy-70);
+      text-shadow: none;
+    }
+    .nav.is-scrolled .nav__menu-btn:hover { color: var(--navy); }
+    .nav__menu-chevron {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      transition: transform 0.25s var(--ease-out);
+    }
+    .nav__menu-btn.is-open .nav__menu-chevron { transform: rotate(180deg); }
+
+    /* Dropdown card */
+    .nav__dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      width: 296px;
+      background: var(--white);
+      border: 1px solid rgba(11, 24, 41, 0.09);
+      border-radius: 10px;
+      box-shadow:
+        0 4px 6px rgba(11, 24, 41, 0.04),
+        0 20px 50px rgba(11, 24, 41, 0.14);
+      padding: 5px;
+      visibility: hidden;
+      opacity: 0;
+      z-index: 910;
+    }
+    .nav__dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.75rem 0.875rem;
+      border-radius: 6px;
+      border-left: 2px solid transparent;
+      text-decoration: none;
+      transition:
+        background 0.15s,
+        border-color 0.15s,
+        transform 0.22s var(--ease-out);
+    }
+    .nav__dropdown-item:hover {
+      background: var(--surface);
+      border-left-color: var(--gold);
+      transform: translateX(4px);
+    }
+    .nav__dropdown-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 7px;
+      background: var(--gold-15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-lo);
+      flex-shrink: 0;
+    }
+    .nav__dropdown-icon svg { width: 18px; height: 18px; }
+    .nav__dropdown-text {}
+    .nav__dropdown-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .nav__dropdown-desc {
+      font-size: 0.73rem;
+      color: var(--navy-45);
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+
+    /* Center slot — Logo */
     .nav__logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      flex-shrink: 0;
+      justify-content: center;
       font-family: var(--font-display);
       font-size: 1.0625rem;
       font-weight: 700;
@@ -117,7 +215,6 @@
       transition: color 0.45s var(--ease-out);
     }
     .nav.is-scrolled .nav__logo { color: var(--navy); }
-
     .nav__logo-mark {
       width: 30px;
       height: 30px;
@@ -129,32 +226,12 @@
       flex-shrink: 0;
     }
 
-    /* Center links */
-    .nav__links {
-      display: flex;
-      align-items: center;
-      gap: 2.25rem;
-      list-style: none;
-      margin: 0 auto;
-    }
-    .nav__links a {
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      color: rgba(255, 255, 255, 0.92);
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.50);
-      transition: color 0.25s;
-    }
-    .nav__links a:hover { color: var(--white); }
-    .nav.is-scrolled .nav__links a { color: var(--navy-70); }
-    .nav.is-scrolled .nav__links a:hover { color: var(--navy); }
-
-    /* Right CTA */
+    /* Right slot — CTA */
     .nav__actions {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 1rem;
-      flex-shrink: 0;
     }
 
     /* Gold CTA button — reused across page */
@@ -284,20 +361,14 @@
       object-position: center;
     }
 
-    /* Gradient overlay — subtle top, dark bottom 40% */
+    /* Dual-direction overlay: strong left band for text legibility + dark bottom */
     .hero__overlay {
       position: absolute;
       inset: 0;
       z-index: 1;
-      background: linear-gradient(
-        to bottom,
-        rgba(11, 24, 41, 0.22) 0%,
-        rgba(11, 24, 41, 0.14) 35%,
-        rgba(11, 24, 41, 0.28) 55%,
-        rgba(11, 24, 41, 0.68) 72%,
-        rgba(11, 24, 41, 0.88) 88%,
-        rgba(11, 24, 41, 0.94) 100%
-      );
+      background:
+        linear-gradient(to right, rgba(11, 24, 41, 0.82) 0%, rgba(11, 24, 41, 0.55) 42%, rgba(11, 24, 41, 0.08) 70%, transparent 88%),
+        linear-gradient(to bottom, rgba(11, 24, 41, 0.15) 0%, rgba(11, 24, 41, 0.06) 30%, rgba(11, 24, 41, 0.52) 68%, rgba(11, 24, 41, 0.92) 100%);
     }
 
     /* World map SVG layer */
@@ -370,32 +441,11 @@
       justify-content: flex-end;
     }
 
-    /* Main copy block */
+    /* Main copy block — stays in left half via text element constraints */
     .hero__content {
-      padding: 0 var(--pad-x) 3rem;
+      padding: 0 var(--pad-x) 3.5rem;
       max-width: var(--max-w);
       width: 100%;
-      align-self: stretch;
-    }
-
-    .hero__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.6875rem;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.375rem;
-    }
-    .hero__eyebrow::before {
-      content: '';
-      display: block;
-      width: 20px;
-      height: 1px;
-      background: currentColor;
-      flex-shrink: 0;
     }
 
     .hero__headline {
@@ -412,17 +462,17 @@
     }
 
     .hero__sub {
-      font-size: clamp(1rem, 1.6vw, 1.1875rem);
+      font-size: clamp(1.0625rem, 1.75vw, 1.3125rem);
       font-weight: 400;
       line-height: 1.55;
-      color: rgba(255, 255, 255, 0.90);
-      max-width: 38ch;
+      color: rgba(255, 255, 255, 0.96);
+      max-width: 36ch;
       margin-bottom: 2.25rem;
       text-wrap: pretty;
-      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.50);
+      text-shadow: 0 1px 14px rgba(0, 0, 0, 0.65);
     }
     .hero__sub strong {
-      color: rgba(255, 255, 255, 0.90);
+      color: var(--white);
       font-weight: 600;
     }
 
@@ -495,7 +545,10 @@
     ═══════════════════════════════════════════════════════ */
     .stats-bar {
       background: var(--navy);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: relative;
+      z-index: 2;
+      clip-path: polygon(0 1.75rem, 100% 0%, 100% 100%, 0% 100%);
+      margin-top: -1.75rem;
     }
     .stats-bar__inner {
       max-width: var(--max-w);
@@ -505,17 +558,17 @@
       grid-template-columns: repeat(4, 1fr);
     }
     .stats-bar__item {
-      padding: 2.25rem 1.75rem;
+      padding: 3rem 2rem;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       flex-direction: column;
-      gap: 0.375rem;
+      gap: 0.5rem;
     }
     .stats-bar__item:first-child { padding-left: 0; }
     .stats-bar__item:last-child  { border-right: none; }
     .stats-bar__num {
       font-family: var(--font-display);
-      font-size: clamp(1.875rem, 2.75vw, 2.75rem);
+      font-size: clamp(2.375rem, 3.4vw, 3.5rem);
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1;
@@ -531,7 +584,7 @@
       font-weight: 500;
       letter-spacing: 0.10em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.38);
+      color: rgba(255, 255, 255, 0.45);
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -539,7 +592,7 @@
        White bg · 4-column card grid · hover lift + gold border
     ═══════════════════════════════════════════════════════ */
     .services {
-      padding: 6rem 0 6.5rem;
+      padding: 6.5rem 0;
       background: var(--white);
     }
     .services__header {
@@ -594,38 +647,62 @@
         box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Gold left-border reveal — scaleY from bottom, GPU-only */
+    /* Gold bottom-border reveal — scaleX from left */
     .service-card::before {
       content: '';
       position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--gold);
-      transform: scaleY(0);
-      transform-origin: bottom center;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--gold), var(--gold-hi));
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Hover — gate behind pointer:fine so touch devices skip false positives */
     @media (hover: hover) and (pointer: fine) {
       .service-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 40px rgba(11, 24, 41, 0.09);
+        transform: translateY(-6px);
+        box-shadow:
+          0 8px 32px rgba(212, 168, 67, 0.15),
+          0 2px 12px rgba(11, 24, 41, 0.06);
       }
-      .service-card:hover::before { transform: scaleY(1); }
+      .service-card:hover::before { transform: scaleX(1); }
     }
 
-    /* Icon badge */
+    /* Icon badge — base */
     .service-card__icon {
-      width: 44px; height: 44px;
+      width: 56px; height: 56px;
       display: flex; align-items: center; justify-content: center;
       background: var(--gold-15);
-      border-radius: 8px;
+      border-radius: 10px;
       color: var(--gold-lo);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
       flex-shrink: 0;
     }
-    .service-card__icon svg { width: 22px; height: 22px; }
+    .service-card__icon svg { width: 28px; height: 28px; }
+
+    /* Per-mode icon style variations */
+    .service-card--air .service-card__icon {
+      background: var(--gold-15);
+      border-radius: 12px;
+      color: var(--gold);
+    }
+    .service-card--ocean .service-card__icon {
+      background: rgba(11, 24, 41, 0.06);
+      border-radius: 50%;
+      color: var(--navy);
+    }
+    .service-card--rail .service-card__icon {
+      background: var(--navy);
+      border-radius: 8px;
+      color: var(--gold);
+    }
+    .service-card--last .service-card__icon {
+      background: rgba(212, 168, 67, 0.18);
+      border-radius: 16px;
+      color: var(--gold-lo);
+    }
 
     .service-card__title {
       font-family: var(--font-display);
@@ -664,29 +741,28 @@
     ═══════════════════════════════════════════════════════ */
     .trust {
       background: #F5F7FA;
-      padding: 5.5rem 0 6rem;
+      padding: 6.5rem 0;
     }
     .trust__kicker {
-      font-size: 0.6875rem;
+      font-size: 1.0625rem;
       font-weight: 600;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: var(--navy-45);
+      letter-spacing: -0.01em;
+      color: var(--navy);
       text-align: center;
       margin-bottom: 2.5rem;
     }
 
-    /* Logo bar */
+    /* Logo bar — boxed style */
     .trust__logos {
       display: flex;
-      align-items: stretch;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      gap: 0.75rem;
       margin-bottom: 4rem;
+      flex-wrap: wrap;
     }
     .trust__logo {
       flex: 1;
-      padding: 1.375rem 1rem;
+      min-width: 110px;
+      padding: 1.125rem 1rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -694,21 +770,26 @@
       font-size: 0.9375rem;
       font-weight: 700;
       letter-spacing: -0.01em;
-      color: rgba(11, 24, 41, 0.22);
-      border-right: 1px solid var(--border);
+      color: rgba(11, 24, 41, 0.32);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
       user-select: none;
-      transition: color 0.25s;
+      transition: border-color 0.22s var(--ease-out), color 0.22s;
     }
-    .trust__logo:last-child { border-right: none; }
     @media (hover: hover) and (pointer: fine) {
-      .trust__logo:hover { color: var(--navy); }
+      .trust__logo:hover {
+        border-color: var(--gold);
+        color: var(--navy);
+      }
     }
 
-    /* Testimonial grid */
+    /* Testimonial grid — featured first */
     .trust__testimonials {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1.35fr 1fr 1fr;
       gap: 1.5rem;
+      align-items: start;
     }
     .testimonial-card {
       background: var(--white);
@@ -718,15 +799,21 @@
       display: flex;
       flex-direction: column;
     }
+    .testimonial-card--featured {
+      padding: 2.5rem;
+    }
 
     .testimonial-card__mark {
       font-family: Georgia, 'Times New Roman', serif;
-      font-size: 2.75rem;
+      font-size: 3.5rem;
       line-height: 0.8;
       color: var(--gold);
-      margin-bottom: 1rem;
+      margin-bottom: 1.125rem;
       display: block;
       user-select: none;
+    }
+    .testimonial-card--featured .testimonial-card__mark {
+      font-size: 5.5rem;
     }
     .testimonial-card__body {
       font-size: 0.9375rem;
@@ -735,6 +822,10 @@
       flex: 1;
       margin-bottom: 1.75rem;
     }
+    .testimonial-card--featured .testimonial-card__body {
+      font-size: 1.0625rem;
+      color: var(--navy);
+    }
     .testimonial-card__author {
       display: flex;
       align-items: center;
@@ -742,10 +833,17 @@
       padding-top: 1.25rem;
       border-top: 1px solid var(--border);
     }
-    .testimonial-card__flag {
-      font-size: 1.375rem;
-      line-height: 1;
+    .testimonial-card__country {
+      font-family: var(--font-display);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--white);
+      background: var(--navy);
+      padding: 4px 7px;
+      border-radius: 4px;
       flex-shrink: 0;
+      line-height: 1;
     }
     .testimonial-card__name {
       font-size: 0.875rem;
@@ -760,13 +858,56 @@
     }
 
     /* ═══════════════════════════════════════════════════════
+       CTA BAND — dark navy · centered · pre-footer
+    ═══════════════════════════════════════════════════════ */
+    .cta-band {
+      background: var(--navy);
+      padding: 7.5rem 0;
+      text-align: center;
+    }
+    .cta-band__eyebrow {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .cta-band__headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.125rem, 4vw, 3.75rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--white);
+      max-width: 20ch;
+      margin: 0 auto 1.375rem;
+      text-wrap: balance;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+    }
+    .cta-band__sub {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      color: rgba(255, 255, 255, 0.52);
+      max-width: 44ch;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+    .cta-band__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.875rem;
+      flex-wrap: wrap;
+    }
+
+    /* ═══════════════════════════════════════════════════════
        RESPONSIVE — MOBILE
     ═══════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
       :root { --nav-h: 60px; --pad-x: 1.25rem; }
 
-      .nav__links,
-      .nav__actions { display: none; }
+      .nav__menu     { display: none; }
+      .nav__actions .btn-gold { display: none; }
       .nav__burger   { display: flex; }
 
       .hero__content { padding-bottom: 2.25rem; }
@@ -775,12 +916,19 @@
         max-width: 18ch;
       }
 
+      /* ── CTA band ── */
+      .cta-band { padding: 5rem 0; }
+
       /* ── Stats bar ── */
+      .stats-bar {
+        clip-path: polygon(0 1rem, 100% 0%, 100% 100%, 0% 100%);
+        margin-top: -1rem;
+      }
       .stats-bar__inner {
         grid-template-columns: repeat(2, 1fr);
       }
       .stats-bar__item {
-        padding: 1.5rem 1rem;
+        padding: 2rem 1.25rem;
         align-items: flex-start;
       }
       .stats-bar__item:first-child { padding-left: 0; }
@@ -855,7 +1003,7 @@
     ═══════════════════════════════════════════════════════ */
     .network {
       background: var(--navy);
-      padding: 6rem 0;
+      padding: 6.5rem 0;
       overflow: hidden;
     }
     .network__inner {
@@ -863,8 +1011,8 @@
       margin: 0 auto;
       padding: 0 var(--pad-x);
       display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 4rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
       align-items: center;
     }
     .network__kicker {
@@ -891,43 +1039,43 @@
       letter-spacing: -0.03em;
       line-height: 1.1;
       color: var(--white);
-      margin-bottom: 2.5rem;
+      margin-bottom: 3rem;
       text-wrap: balance;
     }
     .network__stats {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem 2.5rem;
+      gap: 2rem 2.5rem;
     }
     .network__stat {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
     .network__stat-num {
       font-family: var(--font-display);
-      font-size: clamp(1.875rem, 2.4vw, 2.25rem);
+      font-size: clamp(2.25rem, 3vw, 2.875rem);
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1;
-      color: var(--white);
+      color: var(--gold);
     }
     .network__stat-num em {
       font-style: normal;
-      color: var(--gold);
+      color: var(--gold-hi);
     }
     .network__stat-label {
       font-size: 0.6875rem;
       font-weight: 500;
       letter-spacing: 0.10em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.38);
+      color: rgba(255, 255, 255, 0.72);
     }
 
     /* Globe canvas wrapper */
     .network__globe-wrap {
       position: relative;
-      height: 480px;
+      height: 420px;
     }
     #globe-canvas {
       width: 100%;
@@ -1028,24 +1176,31 @@
     /* Animated truck strip */
     .footer__truck-strip {
       position: relative;
-      height: 60px;
+      height: 72px;
       overflow: hidden;
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .footer__road {
       position: absolute;
-      bottom: 11px;
+      bottom: 12px;
       left: 0;
       right: 0;
-      height: 1px;
-      background: rgba(212, 168, 67, 0.20);
+      height: 2px;
+      background: rgba(212, 168, 67, 0.25);
     }
     .footer__truck {
       position: absolute;
-      bottom: 12px;
-      height: 36px;
+      bottom: 14px;
+      height: 47px;
       width: auto;
       animation: truck-drive 8s linear infinite;
+    }
+    /* Footer logo mark — clean, no gold background */
+    .footer__logo-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
     @keyframes truck-drive {
       from { transform: translateX(-220px); }
@@ -1156,7 +1311,7 @@
         grid-template-columns: 1fr;
         gap: 2.5rem;
       }
-      .network__globe-wrap { height: 340px; }
+      .network__globe-wrap { height: 300px; }
       .footer__grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem 3rem;
@@ -1381,10 +1536,81 @@
   <div class="wrap">
     <div class="nav__inner">
 
-      <!-- Logo left -->
+      <!-- Left: Menu dropdown trigger -->
+      <div class="nav__menu">
+        <button class="nav__menu-btn" id="nav-menu-btn"
+                aria-expanded="false" aria-haspopup="true" aria-controls="nav-dropdown">
+          Menu
+          <svg class="nav__menu-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Dropdown card -->
+        <div class="nav__dropdown" id="nav-dropdown" role="menu" aria-labelledby="nav-menu-btn">
+
+          <a href="#services" class="nav__dropdown-item" role="menuitem">
+            <div class="nav__dropdown-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="7" height="7" rx="1.5"/>
+                <rect x="11" y="2" width="7" height="7" rx="1.5"/>
+                <rect x="2" y="11" width="7" height="7" rx="1.5"/>
+                <rect x="11" y="11" width="7" height="7" rx="1.5"/>
+              </svg>
+            </div>
+            <div class="nav__dropdown-text">
+              <div class="nav__dropdown-label">Services</div>
+              <div class="nav__dropdown-desc">Air, ocean, rail and road freight solutions</div>
+            </div>
+          </a>
+
+          <a href="#network" class="nav__dropdown-item" role="menuitem">
+            <div class="nav__dropdown-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10" cy="10" r="7.5"/>
+                <path d="M2.5 10h15M10 2.5c-2.5 2.8-3.75 4.9-3.75 7.5s1.25 4.7 3.75 7.5"/>
+                <path d="M10 2.5c2.5 2.8 3.75 4.9 3.75 7.5s-1.25 4.7-3.75 7.5"/>
+              </svg>
+            </div>
+            <div class="nav__dropdown-text">
+              <div class="nav__dropdown-label">Network</div>
+              <div class="nav__dropdown-desc">190+ countries, 2,400 active routes worldwide</div>
+            </div>
+          </a>
+
+          <a href="#about" class="nav__dropdown-item" role="menuitem">
+            <div class="nav__dropdown-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10" cy="7" r="3.5"/>
+                <path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6"/>
+              </svg>
+            </div>
+            <div class="nav__dropdown-text">
+              <div class="nav__dropdown-label">About</div>
+              <div class="nav__dropdown-desc">Our story, mission and leadership team</div>
+            </div>
+          </a>
+
+          <a href="#careers" class="nav__dropdown-item" role="menuitem">
+            <div class="nav__dropdown-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="7" width="14" height="10" rx="1.5"/>
+                <path d="M7 7V5.5A3.5 3.5 0 0113 5.5V7"/>
+              </svg>
+            </div>
+            <div class="nav__dropdown-text">
+              <div class="nav__dropdown-label">Careers</div>
+              <div class="nav__dropdown-desc">Join the team shaping global trade</div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Center: Logo -->
       <a href="/" class="nav__logo" aria-label="Translog home">
         <div class="nav__logo-mark" aria-hidden="true">
-          <!-- Arrow mark -->
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M7.5 2.5 12 7l-4.5 4.5" stroke="#0B1829" stroke-width="1.6"
                   stroke-linecap="round" stroke-linejoin="round"/>
@@ -1393,26 +1619,16 @@
         TRANSLOG
       </a>
 
-      <!-- Links center -->
-      <ul class="nav__links" role="list">
-        <li><a href="#network">Network</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#about">About</a></li>
-      </ul>
-
-      <!-- CTA right -->
+      <!-- Right: CTA + Hamburger -->
       <div class="nav__actions">
         <a href="#quote" class="btn-gold">Get a Quote</a>
+        <button class="nav__burger" id="nav-burger"
+                aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
-
-      <!-- Hamburger (mobile) -->
-      <button class="nav__burger" id="nav-burger"
-              aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
 
     </div>
   </div>
@@ -1421,10 +1637,10 @@
 <!-- Mobile overlay -->
 <div class="nav__mobile" id="nav-mobile" role="dialog" aria-label="Navigation menu" aria-hidden="true">
   <ul class="nav__mobile-links" role="list">
-    <li><a href="#network" class="js-close-menu">Network</a></li>
     <li><a href="#services" class="js-close-menu">Services</a></li>
-    <li><a href="#pricing" class="js-close-menu">Pricing</a></li>
-    <li><a href="#about"   class="js-close-menu">About</a></li>
+    <li><a href="#network"  class="js-close-menu">Network</a></li>
+    <li><a href="#about"    class="js-close-menu">About</a></li>
+    <li><a href="#careers"  class="js-close-menu">Careers</a></li>
   </ul>
   <div class="nav__mobile-divider" aria-hidden="true"></div>
   <a href="#quote" class="btn-gold js-close-menu"
@@ -1756,7 +1972,6 @@
 
     <!-- Main copy -->
     <div class="hero__content wrap">
-      <p class="hero__eyebrow" aria-hidden="true">Global Logistics Network</p>
 
       <h1 class="hero__headline" id="hero-heading">
         YOUR CARGO.<br>
@@ -1830,6 +2045,99 @@
 
 
 <!-- ═══════════════════════════════════════════════════════
+     SERVICES SECTION
+═══════════════════════════════════════════════════════ -->
+<section class="services" id="services">
+  <div class="wrap">
+
+    <header class="services__header">
+      <p class="services__kicker">What we move</p>
+      <h2 class="services__headline">One provider. Every mode.</h2>
+    </header>
+
+    <div class="services__grid" id="services-grid">
+
+      <!-- Air Freight -->
+      <article class="service-card service-card--air">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 15l-2-1-7-5.5V3.5a1.5 1.5 0 00-3 0v5L2 14l2 1.5 6-2V16l-2 1.5V20l4-1 4 1v-2.5L14 16v-2.5l6 2 2-1.5z"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Air Freight</h3>
+        <p class="service-card__desc">Time-critical cargo delivered door to door. Priority lanes, 24 h booking confirmation, global network of 180 airline partners.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg class="service-card__arrow" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Ocean Freight -->
+      <article class="service-card service-card--ocean">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.5l1 2.5h16l1-2.5H3z"/>
+            <path d="M3 14h18M9 14V9.5l3-2.5 3 2.5V14"/>
+            <path d="M12 7V4.5"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Ocean Freight</h3>
+        <p class="service-card__desc">FCL and LCL solutions across major trade lanes. Real-time container tracking, customs pre-clearance, and guaranteed vessel space.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg class="service-card__arrow" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Rail + Road -->
+      <article class="service-card service-card--rail">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="3" width="14" height="13" rx="2"/>
+            <path d="M8 20l1-4h6l1 4M5 12h14M9 3v6h6V3"/>
+            <circle cx="9.5" cy="16.5" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="14.5" cy="16.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Rail + Road</h3>
+        <p class="service-card__desc">Intermodal solutions spanning 52 countries. Silk Road rail corridors from China to Europe in 18 days, last-yard trucking included.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg class="service-card__arrow" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Last Mile -->
+      <article class="service-card service-card--last">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Last Mile</h3>
+        <p class="service-card__desc">From regional DCs to the end recipient. Flexible delivery windows, proof-of-delivery APIs, and same-day urban delivery in 38 cities.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg class="service-card__arrow" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+<!-- /services -->
+
+
+<!-- ═══════════════════════════════════════════════════════
      NETWORK SECTION
 ═══════════════════════════════════════════════════════ -->
 <section class="network" id="network" aria-labelledby="network-heading">
@@ -1883,99 +2191,6 @@
 
 
 <!-- ═══════════════════════════════════════════════════════
-     SERVICES SECTION
-═══════════════════════════════════════════════════════ -->
-<section class="services" id="services">
-  <div class="wrap">
-
-    <header class="services__header">
-      <p class="services__kicker">What we move</p>
-      <h2 class="services__headline">One provider. Every mode.</h2>
-    </header>
-
-    <div class="services__grid" id="services-grid">
-
-      <!-- Air Freight -->
-      <article class="service-card">
-        <div class="service-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 15l-2-1-7-5.5V3.5a1.5 1.5 0 00-3 0v5L2 14l2 1.5 6-2V16l-2 1.5V20l4-1 4 1v-2.5L14 16v-2.5l6 2 2-1.5z"/>
-          </svg>
-        </div>
-        <h3 class="service-card__title">Air Freight</h3>
-        <p class="service-card__desc">Time-critical cargo delivered door to door. Priority lanes, 24 h booking confirmation, global network of 180 airline partners.</p>
-        <a href="#" class="service-card__link">
-          Learn more
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </article>
-
-      <!-- Ocean Freight -->
-      <article class="service-card">
-        <div class="service-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 18.5l1 2.5h16l1-2.5H3z"/>
-            <path d="M3 14h18M9 14V9.5l3-2.5 3 2.5V14"/>
-            <path d="M12 7V4.5"/>
-          </svg>
-        </div>
-        <h3 class="service-card__title">Ocean Freight</h3>
-        <p class="service-card__desc">FCL and LCL solutions across major trade lanes. Real-time container tracking, customs pre-clearance, and guaranteed vessel space.</p>
-        <a href="#" class="service-card__link">
-          Learn more
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </article>
-
-      <!-- Rail + Road -->
-      <article class="service-card">
-        <div class="service-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="3" width="14" height="13" rx="2"/>
-            <path d="M8 20l1-4h6l1 4M5 12h14M9 3v6h6V3"/>
-            <circle cx="9.5" cy="16.5" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="14.5" cy="16.5" r="1" fill="currentColor" stroke="none"/>
-          </svg>
-        </div>
-        <h3 class="service-card__title">Rail + Road</h3>
-        <p class="service-card__desc">Intermodal solutions spanning 52 countries. Silk Road rail corridors from China to Europe in 18 days, last-yard trucking included.</p>
-        <a href="#" class="service-card__link">
-          Learn more
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </article>
-
-      <!-- Last Mile -->
-      <article class="service-card">
-        <div class="service-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-            <circle cx="12" cy="9" r="2.5"/>
-          </svg>
-        </div>
-        <h3 class="service-card__title">Last Mile</h3>
-        <p class="service-card__desc">From regional DCs to the end recipient. Flexible delivery windows, proof-of-delivery APIs, and same-day urban delivery in 38 cities.</p>
-        <a href="#" class="service-card__link">
-          Learn more
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </article>
-
-    </div>
-  </div>
-</section>
-<!-- /services -->
-
-
-<!-- ═══════════════════════════════════════════════════════
      TRUST SECTION
 ═══════════════════════════════════════════════════════ -->
 <section class="trust" id="trust">
@@ -1996,11 +2211,11 @@
     <!-- Testimonials -->
     <div class="trust__testimonials" id="testimonials-grid">
 
-      <article class="testimonial-card">
+      <article class="testimonial-card testimonial-card--featured">
         <span class="testimonial-card__mark" aria-hidden="true">"</span>
-        <p class="testimonial-card__body">Transit times to our Southeast Asia distributors dropped 34% after the first quarter. One team, one dashboard, zero re-brokering.</p>
+        <p class="testimonial-card__body">Transit times to our Southeast Asia distributors dropped 34% after the first quarter. One team, one dashboard, zero re-brokering. We wouldn't go back.</p>
         <div class="testimonial-card__author">
-          <span class="testimonial-card__flag" aria-label="Denmark">🇩🇰</span>
+          <span class="testimonial-card__country">DK</span>
           <div>
             <div class="testimonial-card__name">Thomas Berg</div>
             <div class="testimonial-card__role">Head of Supply Chain, Nordea Industrial</div>
@@ -2012,7 +2227,7 @@
         <span class="testimonial-card__mark" aria-hidden="true">"</span>
         <p class="testimonial-card__body">We replaced four TMS platforms with a single view. The operations team reclaimed 11 hours a week — that's real capacity back in the business.</p>
         <div class="testimonial-card__author">
-          <span class="testimonial-card__flag" aria-label="India">🇮🇳</span>
+          <span class="testimonial-card__country">IN</span>
           <div>
             <div class="testimonial-card__name">Priya Rajan</div>
             <div class="testimonial-card__role">VP Global Logistics, Apex Ventures</div>
@@ -2024,7 +2239,7 @@
         <span class="testimonial-card__mark" aria-hidden="true">"</span>
         <p class="testimonial-card__body">Q4 shipments landed 3 weeks ahead of schedule through their Rotterdam bonded warehouse. First time in five years we weren't firefighting in November.</p>
         <div class="testimonial-card__author">
-          <span class="testimonial-card__flag" aria-label="Brazil">🇧🇷</span>
+          <span class="testimonial-card__country">BR</span>
           <div>
             <div class="testimonial-card__name">Carlos Mendes</div>
             <div class="testimonial-card__role">Chief Operating Officer, Meridian Consumer</div>
@@ -2036,6 +2251,27 @@
   </div>
 </section>
 <!-- /trust -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CTA BAND
+═══════════════════════════════════════════════════════ -->
+<section class="cta-band" id="contact" aria-labelledby="cta-heading">
+  <div class="wrap">
+    <p class="cta-band__eyebrow">Start moving</p>
+    <h2 class="cta-band__headline" id="cta-heading">
+      Ready to consolidate your freight operations?
+    </h2>
+    <p class="cta-band__sub">
+      Join 400+ enterprise operations teams who moved to a single freight layer across 190 countries.
+    </p>
+    <div class="cta-band__actions">
+      <a href="#quote" class="btn-hero-gold">Get a Quote</a>
+      <a href="#network" class="btn-hero-outline">See Our Network</a>
+    </div>
+  </div>
+</section>
+<!-- /cta-band -->
 
 
 <!-- ═══════════════════════════════════════════════════════
@@ -2088,10 +2324,10 @@
       <!-- Brand column -->
       <div>
         <div class="footer__brand-name">
-          <div class="nav__logo-mark" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <div class="footer__logo-mark" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
               <path d="M2 7h10M7.5 2.5 12 7l-4.5 4.5"
-                    stroke="#0B1829" stroke-width="1.6"
+                    stroke="#D4A843" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
@@ -2252,6 +2488,57 @@
     });
   });
 
+  /* ── Dropdown menu ──────────────────────────────────── */
+  var menuBtn  = document.getElementById('nav-menu-btn');
+  var dropdown = document.getElementById('nav-dropdown');
+  var dropOpen = false;
+
+  function openDrop() {
+    dropOpen = true;
+    menuBtn.classList.add('is-open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    dropdown.style.visibility = 'visible';
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(dropdown,
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 0.3, ease: 'cubic-bezier(0.23,1,0.32,1)' }
+      );
+    }
+  }
+
+  function closeDrop() {
+    dropOpen = false;
+    menuBtn.classList.remove('is-open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    if (typeof gsap !== 'undefined') {
+      gsap.to(dropdown, {
+        opacity: 0, y: -8, duration: 0.18, ease: 'power3.in',
+        onComplete: function () { dropdown.style.visibility = 'hidden'; }
+      });
+    } else {
+      dropdown.style.visibility = 'hidden';
+    }
+  }
+
+  menuBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (dropOpen) { closeDrop(); } else { openDrop(); }
+  });
+
+  document.querySelectorAll('.nav__dropdown-item').forEach(function (el) {
+    el.addEventListener('click', function () { closeDrop(); });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (dropOpen && !dropdown.contains(e.target) && e.target !== menuBtn) {
+      closeDrop();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && dropOpen) { closeDrop(); }
+  });
+
   /* ── GSAP Counter Animation ─────────────────────────── */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
@@ -2301,6 +2588,18 @@
         }
       }
     );
+
+    /* Service card arrow hover — GSAP translateX */
+    document.querySelectorAll('.service-card').forEach(function(card) {
+      var arrow = card.querySelector('.service-card__arrow');
+      if (!arrow) return;
+      card.addEventListener('mouseenter', function() {
+        gsap.to(arrow, { x: 4, duration: 0.22, ease: 'power2.out' });
+      });
+      card.addEventListener('mouseleave', function() {
+        gsap.to(arrow, { x: 0, duration: 0.18, ease: 'power2.in' });
+      });
+    });
 
     /* Testimonial cards */
     gsap.fromTo('.testimonial-card',
@@ -2383,7 +2682,7 @@
   var scene  = new THREE.Scene();
   var W = wrap.clientWidth, H = wrap.clientHeight;
   var camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 100);
-  camera.position.z = 2.6;
+  camera.position.z = 3.1;
 
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
