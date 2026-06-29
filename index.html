@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRANSLOG — Global Logistics</title>
+  <title>TRANSLOG - Global Logistics</title>
+  <meta name="description" content="Global freight infrastructure connecting 190 countries. Air, ocean, rail and road solutions through one operations layer. Zero handoffs.">
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://logistik-demo-7yac.vercel.app">
+  <meta property="og:title"       content="TRANSLOG - Global Logistics">
+  <meta property="og:description" content="190 countries. One operations team. Zero handoffs.">
+  <meta property="og:image"       content="https://logistik-demo-7yac.vercel.app/og-image.jpg">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="TRANSLOG - Global Logistics">
+  <meta name="twitter:description" content="190 countries. One operations team. Zero handoffs.">
 
   <!-- Inter (Google Fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,7 +69,7 @@
       color: var(--navy);
       font-family: var(--font-body);
       font-size: 1rem;
-      line-height: 1.65;
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -317,7 +326,9 @@
       position: fixed;
       inset: 0;
       z-index: 899;
-      background: var(--white);
+      background: rgba(11, 24, 41, 0.97);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -347,15 +358,15 @@
       font-family: var(--font-display);
       font-size: 2rem;
       font-weight: 600;
-      color: var(--navy);
+      color: var(--white);
       letter-spacing: -0.025em;
       transition: color 0.2s;
     }
-    .nav__mobile-links a:hover { color: var(--gold-lo); }
+    .nav__mobile-links a:hover { color: var(--gold); }
     .nav__mobile-divider {
       width: 40px;
       height: 1px;
-      background: var(--border);
+      background: rgba(255, 255, 255, 0.12);
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -613,7 +624,7 @@
     ═══════════════════════════════════════════════════════ */
     .services {
       padding: 6.5rem 0;
-      background: var(--white);
+      background: #FAFAFA;
     }
     .services__header {
       margin-bottom: 3.5rem;
@@ -622,9 +633,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 1rem;
@@ -637,7 +648,7 @@
     }
     .services__headline {
       font-family: var(--font-display);
-      font-size: clamp(1.875rem, 3vw, 2.75rem);
+      font-size: clamp(2rem, 4vw, 3.5rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.05;
@@ -734,7 +745,7 @@
     }
     .service-card__desc {
       font-size: 0.875rem;
-      line-height: 1.65;
+      line-height: 1.7;
       color: var(--navy-70);
       flex: 1;
       margin-bottom: 1.625rem;
@@ -837,7 +848,7 @@
     }
     .testimonial-card__body {
       font-size: 0.9375rem;
-      line-height: 1.68;
+      line-height: 1.7;
       color: var(--navy-70);
       flex: 1;
       margin-bottom: 1.75rem;
@@ -886,16 +897,16 @@
       text-align: center;
     }
     .cta-band__eyebrow {
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 1.5rem;
     }
     .cta-band__headline {
       font-family: var(--font-display);
-      font-size: clamp(2.125rem, 4vw, 3.75rem);
+      font-size: clamp(2.5rem, 5vw, 4rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.05;
@@ -985,6 +996,21 @@
       .trust__testimonials { grid-template-columns: 1fr; }
       .trust { padding: 4rem 0 4.5rem; }
       .services { padding: 4rem 0 4.5rem; }
+
+      /* ── Service cards single column on mobile ── */
+      .services__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        overflow-x: visible;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .service-card {
+        min-width: unset;
+        flex-shrink: unset;
+      }
     }
 
     /* ── Services horizontal scroll (tablet + mobile) ─────── */
@@ -1027,6 +1053,21 @@
       50%       { transform: translateX(-50%) translateY(9px); opacity: 1; }
     }
 
+    /* ── Film grain on dark sections ── */
+    .cta-band { position: relative; }
+    .network::after,
+    .cta-band::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      opacity: 0.07;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 100;
+    }
+
     /* ═══════════════════════════════════════════════════════
        ACCESSIBILITY
     ═══════════════════════════════════════════════════════ */
@@ -1041,9 +1082,10 @@
        NETWORK SECTION — dark navy · left copy + stats · right globe
     ═══════════════════════════════════════════════════════ */
     .network {
-      background: var(--navy);
+      background: radial-gradient(ellipse at 50% 40%, #0D1E33 0%, #05101E 100%);
       padding: 8rem 0;
       overflow: hidden;
+      position: relative;
     }
     .network__inner {
       max-width: var(--max-w);
@@ -1058,9 +1100,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 1.25rem;
@@ -1073,7 +1115,7 @@
     }
     .network__headline {
       font-family: var(--font-display);
-      font-size: clamp(1.75rem, 2.6vw, 2.375rem);
+      font-size: clamp(2rem, 4vw, 3.5rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
@@ -1352,7 +1394,7 @@
         grid-template-columns: 1fr;
         gap: 2.5rem;
       }
-      .network__globe-wrap { height: 300px; }
+      .network__globe-wrap { height: 280px; }
       .footer__grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem 3rem;
