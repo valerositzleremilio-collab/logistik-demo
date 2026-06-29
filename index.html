@@ -377,8 +377,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: right center;
-      transform: scaleX(-1);
+      object-position: 75% center;
     }
 
     /* Dual-direction overlay: strong left band for text legibility + dark bottom */
@@ -386,9 +385,7 @@
       position: absolute;
       inset: 0;
       z-index: 1;
-      background:
-        linear-gradient(to right, rgba(11, 24, 41, 0.85) 0%, rgba(11, 24, 41, 0.60) 35%, rgba(11, 24, 41, 0.15) 65%, rgba(11, 24, 41, 0.10) 100%),
-        linear-gradient(to bottom, rgba(11, 24, 41, 0.15) 0%, rgba(11, 24, 41, 0.06) 30%, rgba(11, 24, 41, 0.52) 68%, rgba(11, 24, 41, 0.92) 100%);
+      background: linear-gradient(to right, rgba(11,24,41,0.95) 0%, rgba(11,24,41,0.75) 45%, rgba(11,24,41,0.05) 100%);
     }
 
     /* World map SVG layer */
@@ -464,7 +461,7 @@
     /* Main copy block — stays in left half via text element constraints */
     .hero__content {
       padding: 0 var(--pad-x) 3.5rem;
-      max-width: 55%;
+      max-width: 45%;
       width: 100%;
       margin-left: 0;
     }
