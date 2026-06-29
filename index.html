@@ -3,39 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRANSLOG — Intercontinental Logistics</title>
+  <title>TRANSLOG — Global Logistics</title>
+
+  <!-- Inter (Google Fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Clash Display (Fontshare CDN — not on Google Fonts) -->
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+
   <style>
-    /* ── TOKENS ─────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════
+       TASK 1 — DESIGN SYSTEM TOKENS
+       Light: White base · Navy text · Gold accent
+    ═══════════════════════════════════════════════════════ */
     :root {
-      --bg:          oklch(0.11 0.045 243);
-      --surface:     oklch(0.15 0.038 243);
-      --surface-hi:  oklch(0.20 0.030 243);
-      --ink:         oklch(0.95 0.000   0);
-      --muted:       oklch(0.50 0.000   0);
-      --dim:         oklch(0.65 0.000   0);
-      --cobalt:      oklch(0.89 0.175  96);
-      --cobalt-hi:   oklch(0.94 0.145  96);
-      --cobalt-lo:   oklch(0.55 0.120  96);
-      --cobalt-10:   oklch(0.89 0.175  96 / 0.10);
-      --amber:       oklch(0.82 0.120  75);
-      --border:      oklch(0.24 0.022 243);
-      --border-hi:   oklch(0.30 0.018 243);
-      --font-d:      'Barlow Condensed', sans-serif;
-      --font-b:      'Barlow', sans-serif;
-      --ease-quart:  cubic-bezier(0.25, 1, 0.5,  1);
-      --ease-expo:   cubic-bezier(0.16, 1, 0.3,  1);
-      --ease-strong: cubic-bezier(0.23, 1, 0.32, 1);
+      /* Core palette */
+      --white:        #FFFFFF;
+      --navy:         #0B1829;
+      --navy-90:      rgba(11, 24, 41, 0.90);
+      --navy-70:      rgba(11, 24, 41, 0.70);
+      --navy-45:      rgba(11, 24, 41, 0.45);
+      --navy-20:      rgba(11, 24, 41, 0.20);
+      --navy-10:      rgba(11, 24, 41, 0.10);
+      --navy-06:      rgba(11, 24, 41, 0.06);
+      --gold:         #D4A843;
+      --gold-hi:      #DFBA58;
+      --gold-lo:      #B88C2E;
+      --gold-30:      rgba(212, 168, 67, 0.30);
+      --gold-15:      rgba(212, 168, 67, 0.15);
+      --surface:      #F7F8FA;
+      --border:       rgba(11, 24, 41, 0.10);
+
+      /* Typography */
+      --font-display: 'Clash Display', 'Inter', sans-serif;
+      --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+
+      /* Easing */
+      --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-quart:   cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-spring:  cubic-bezier(0.32, 0.72, 0, 1);
+
+      /* Structure */
+      --nav-h:        72px;
+      --max-w:        1200px;
+      --pad-x:        2rem;
     }
 
-    /* ── RESET ──────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--font-b);
+      background: var(--white);
+      color: var(--navy);
+      font-family: var(--font-body);
       font-size: 1rem;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
@@ -43,1156 +66,2355 @@
     }
     a { color: inherit; text-decoration: none; }
 
-    /* ── FILM GRAIN ─────────────────────────────────────── */
-    .grain {
-      position: fixed; inset: 0;
-      width: 100%; height: 100%;
-      z-index: 1001;
-      pointer-events: none;
+    /* ── Utility ── */
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
     }
 
-    /* ── UTILITIES ──────────────────────────────────────── */
-    .label {
-      font-family: var(--font-b);
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .wrap   { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-    .wrap-s { max-width:  800px; margin: 0 auto; padding: 0 2rem; }
-
-    /* ── NAV ────────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════
+       TASK 2 — NAVIGATION
+       Transparent over hero → white on scroll
+    ═══════════════════════════════════════════════════════ */
     .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      height: 64px; padding: 0 2rem;
-      display: flex; align-items: center; justify-content: space-between;
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 900;
+      height: var(--nav-h);
+      /* transparent by default — overlaps hero */
       background: transparent;
-      border-bottom: 1px solid transparent;
-      transition: background 0.35s var(--ease-quart), border-color 0.35s;
+      transition:
+        background 0.45s var(--ease-out),
+        box-shadow 0.45s var(--ease-out);
     }
-    .nav.scrolled {
-      background: oklch(0.11 0.045 243 / 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom-color: var(--border);
-    }
-    .nav__brand {
-      font-family: var(--font-d);
-      font-size: 1.375rem; font-weight: 800;
-      letter-spacing: 0.10em;
-    }
-    .nav__brand em { color: var(--cobalt); font-style: normal; }
-    .nav__links {
-      display: flex; align-items: center; gap: 2.5rem; list-style: none;
-    }
-    .nav__links a {
-      font-size: 0.8rem; font-weight: 500;
-      letter-spacing: 0.07em; text-transform: uppercase;
-      color: var(--muted); transition: color 0.2s;
-    }
-    .nav__links a:hover { color: var(--ink); }
-    .nav__cta {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 1.25rem;
-      background: var(--surface-hi); color: var(--ink);
-      font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em;
-      border: 1px solid var(--border-hi);
-      border-radius: 4px;
-      transition: background 0.2s, border-color 0.2s, transform 0.15s;
-    }
-    .nav__cta:hover { background: oklch(0.22 0 0); border-color: var(--dim); transform: translateY(-1px); }
-    .nav__cta:active { transform: scale(0.97); }
-
-    /* ── BUTTONS ────────────────────────────────────────── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 0.625rem;
-      padding: 0.875rem 2rem; border-radius: 4px;
-      font-family: var(--font-b); font-size: 0.9375rem; font-weight: 600;
-      transition: background 0.3s var(--ease-quart), transform 0.3s var(--ease-quart),
-                  border-color 0.3s, color 0.3s, box-shadow 0.3s;
-    }
-    .btn-primary { background: var(--cobalt); color: oklch(0.10 0.045 243); }
-    .btn-primary:hover {
-      background: var(--cobalt-hi);
-      transform: scale(1.02) translateY(-1px);
-      box-shadow: 0 8px 28px oklch(0.89 0.175 96 / 0.28);
-    }
-    .btn-primary:active { transform: scale(0.97); }
-    .btn-primary svg, .btn-ghost svg { transition: transform 0.2s var(--ease-quart); }
-    .btn-primary:hover svg, .btn-ghost:hover svg { transform: translateX(4px); }
-    .btn-ghost {
-      background: transparent; color: var(--muted);
-      border: 1px solid var(--border-hi);
-    }
-    .btn-ghost:hover {
-      border-color: var(--cobalt); color: var(--cobalt);
-      transform: scale(1.02);
-      box-shadow: 0 0 18px oklch(0.89 0.175 96 / 0.10);
-    }
-    .btn-ghost:active { transform: scale(0.97); }
-
-    /* ── HERO (VIDEO) ───────────────────────────────────── */
-    @keyframes ken-burns {
-      0%   { transform: scale(1.00); }
-      100% { transform: scale(1.07); }
-    }
-    .hero {
-      position: relative;
-      height: 100dvh;
-      overflow: hidden;
-    }
-    .hero__video {
-      position: absolute; inset: 0; z-index: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      pointer-events: none;
-      animation: ken-burns 25s ease-out forwards;
-      transform-origin: center center;
-    }
-    .hero::after {
-      content: '';
-      position: absolute; inset: 0; z-index: 1;
-      background: radial-gradient(ellipse at center, transparent 35%, oklch(0.07 0.035 243 / 0.70) 100%);
-      pointer-events: none;
-    }
-    .hero__overlay {
-      position: absolute; inset: 0; z-index: 2;
-      background: linear-gradient(to top, oklch(0.11 0.045 243) 0%, transparent 60%);
-      opacity: 0; pointer-events: none;
-      will-change: opacity;
-    }
-    .hero__reveal {
-      position: absolute; bottom: 8rem; left: 0; right: 0; z-index: 3;
-      display: flex; justify-content: center; align-items: center;
-      opacity: 0; pointer-events: none;
-      padding: 0 2rem;
-      will-change: transform, opacity;
-    }
-    .hero__reveal-glass {
-      background: oklch(0.11 0.045 243 / 0.52);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid oklch(0.89 0.175 96 / 0.30);
-      box-shadow: 0 0 36px oklch(0.89 0.175 96 / 0.10),
-                  inset 0 1px 0 oklch(0.89 0.175 96 / 0.08);
-      border-radius: 8px;
-      padding: 2.5rem 3.5rem;
-      text-align: center;
-    }
-    .hero__reveal-headline {
-      font-family: var(--font-d);
-      font-size: clamp(3.5rem, 9vw, 8rem);
-      font-weight: 800; line-height: 0.92;
-      letter-spacing: -0.025em;
-      color: var(--ink); text-wrap: balance;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .hero__video { animation: none; }
+    .nav.is-scrolled {
+      background: var(--white);
+      box-shadow:
+        0 1px 0 var(--border),
+        0 4px 32px rgba(11, 24, 41, 0.06);
     }
 
-    /* ── PROOF BAR ──────────────────────────────────────── */
-    .proof {
-      padding: 4rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .proof__inner { text-align: center; }
-    .proof__logos {
-      display: flex; align-items: center; justify-content: center;
-      gap: 3.5rem; flex-wrap: wrap; margin-top: 1.75rem;
-    }
-    .proof__logo {
-      font-family: var(--font-d);
-      font-size: 1.0625rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--muted); opacity: 0.4;
-      transition: opacity 0.25s;
-    }
-    .proof__logo:hover { opacity: 0.8; }
-
-    /* ── SERVICES ───────────────────────────────────────── */
-    .services { padding: 6rem 0; }
-    .services__head {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      gap: 3rem; margin-bottom: 3.5rem;
-    }
-    .services__hl {
-      font-family: var(--font-d);
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 700; line-height: 1.0;
-      letter-spacing: -0.01em; max-width: 18ch;
-    }
-    .services__sub {
-      max-width: 38ch;
-      font-size: 0.9375rem; color: var(--muted); line-height: 1.65;
-    }
-    .services__grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      border: 1px solid var(--border);
-      gap: 1px; background: var(--border);
-    }
-    .svc {
-      background: var(--bg);
-      padding: 3rem 2.5rem 2.5rem;
-      position: relative; overflow: hidden;
-      transition: background 0.3s var(--ease-quart);
-      will-change: transform;
-    }
-    .svc::after {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: var(--cobalt);
-      transform: scaleX(0); transform-origin: left;
-      transition: transform 0.45s var(--ease-expo);
-    }
-    .svc:hover { background: var(--surface); }
-    .svc:hover::after { transform: scaleX(1); }
-    .svc__icon { width: 44px; height: 44px; color: var(--cobalt); margin-bottom: 1.75rem; display: block; }
-    .svc__title {
-      font-family: var(--font-d);
-      font-size: 1.375rem; font-weight: 700; letter-spacing: 0.01em;
-      margin-bottom: 0.75rem;
-    }
-    .svc__body { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
-    .svc__more {
-      display: inline-flex; align-items: center; gap: 0.375rem;
-      margin-top: 1.75rem;
-      font-size: 0.8rem; font-weight: 600;
-      color: var(--cobalt); letter-spacing: 0.04em;
-      transition: gap 0.2s var(--ease-quart);
-    }
-    .svc:hover .svc__more { gap: 0.625rem; }
-
-    /* ── NETWORK ────────────────────────────────────────── */
-    .network {
-      padding: 6rem 0;
-      background: var(--surface);
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-    }
-    .network__grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 6rem; align-items: center;
-    }
-    .network__hl {
-      font-family: var(--font-d);
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 700; line-height: 1.0;
-      letter-spacing: -0.01em; margin-bottom: 1.25rem;
-    }
-    .network__body {
-      font-size: 0.9375rem; color: var(--muted); line-height: 1.7; margin-bottom: 2.25rem;
-    }
-    .metrics {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-      border: 1px solid var(--border); background: var(--border);
-    }
-    .metric {
-      background: var(--bg); padding: 1.25rem 1.5rem;
-    }
-    .metric__val {
-      font-family: var(--font-d);
-      font-size: 2rem; font-weight: 700; line-height: 1;
-      color: var(--amber);
-    }
-    .metric__lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
-
-    /* ── GLOBE CONTAINER ────────────────────────────────── */
-    #globe-container {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1;
-      border-radius: 6px;
-      overflow: hidden;
-      cursor: crosshair;
-      background: oklch(0.07 0.000 0);
-    }
-    #globe-container canvas {
-      display: block;
+    .nav__inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
     }
 
-    /* ── GLOBE LOADING ──────────────────────────────────── */
-    .globe-loading {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8125rem; color: var(--muted);
-      letter-spacing: 0.08em;
-      pointer-events: none;
+    /* Logo */
+    .nav__logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--white);
+      transition: color 0.45s var(--ease-out);
     }
+    .nav.is-scrolled .nav__logo { color: var(--navy); }
 
-    /* ── GLOBE POPUP ────────────────────────────────────── */
-    .globe-popup {
-      position: absolute;
-      bottom: 1.25rem; left: 1.25rem;
-      background: var(--surface-hi);
-      border: 1px solid var(--border-hi);
-      border-radius: 6px;
-      padding: 1.125rem 1.375rem;
-      min-width: 220px; max-width: 260px;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-      z-index: 10;
-      transition: opacity 0.3s var(--ease-quart), transform 0.3s var(--ease-quart);
-    }
-    .globe-popup.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-    .globe-popup__header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 0.75rem; margin-bottom: 0.875rem;
-    }
-    .gp-city {
-      font-family: var(--font-d);
-      font-size: 1.25rem; font-weight: 700; line-height: 1.1;
-    }
-    .gp-region {
-      font-size: 0.75rem; color: var(--muted);
-      letter-spacing: 0.06em; text-transform: uppercase;
-      margin-top: 0.2rem;
-    }
-    .gp-close {
-      background: none; border: none;
-      color: var(--muted); line-height: 1;
-      padding: 2px; cursor: pointer;
-      transition: color 0.2s;
+    .nav__logo-mark {
+      width: 30px;
+      height: 30px;
+      background: var(--gold);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
-    .gp-close:hover { color: var(--ink); }
-    .gp-routes-row {
-      display: flex; align-items: baseline; gap: 0.375rem;
-      margin-bottom: 0.625rem;
+
+    /* Center links */
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+      list-style: none;
+      margin: 0 auto;
     }
-    .gp-routes {
-      font-family: var(--font-d);
-      font-size: 1.625rem; font-weight: 700;
-      color: var(--amber); line-height: 1;
+    .nav__links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: rgba(255, 255, 255, 0.80);
+      transition: color 0.25s;
     }
-    .gp-routes-lbl {
-      font-size: 0.8rem; color: var(--muted);
+    .nav__links a:hover { color: var(--white); }
+    .nav.is-scrolled .nav__links a { color: var(--navy-70); }
+    .nav.is-scrolled .nav__links a:hover { color: var(--navy); }
+
+    /* Right CTA */
+    .nav__actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
     }
-    .gp-info {
-      font-size: 0.8125rem; color: var(--dim); line-height: 1.55;
-      margin-bottom: 0.875rem;
+
+    /* Gold CTA button — reused across page */
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: var(--font-body);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 9px 18px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition:
+        background 0.2s,
+        transform 0.25s var(--ease-out),
+        box-shadow 0.25s;
     }
-    .gp-cta {
-      font-size: 0.8rem; font-weight: 600;
-      color: var(--cobalt); letter-spacing: 0.04em;
+    .btn-gold:hover {
+      background: var(--gold-hi);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(212, 168, 67, 0.30);
+    }
+    .btn-gold:active { transform: translateY(0) scale(0.98); box-shadow: none; }
+
+    /* Hamburger (mobile) */
+    .nav__burger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    .nav__burger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--white);
+      border-radius: 2px;
+      transform-origin: center;
+      transition:
+        background 0.4s,
+        transform 0.35s var(--ease-out),
+        opacity 0.25s;
+    }
+    .nav.is-scrolled .nav__burger span { background: var(--navy); }
+    .nav__burger.is-open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav__burger.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav__burger.is-open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile overlay */
+    .nav__mobile {
+      position: fixed;
+      inset: 0;
+      z-index: 899;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-12px);
+      transition:
+        opacity 0.35s var(--ease-out),
+        transform 0.35s var(--ease-out),
+        visibility 0.35s;
+    }
+    .nav__mobile.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .nav__mobile-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+    }
+    .nav__mobile-links a {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: -0.025em;
       transition: color 0.2s;
     }
-    .gp-cta:hover { color: var(--cobalt-hi); }
+    .nav__mobile-links a:hover { color: var(--gold-lo); }
+    .nav__mobile-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border);
+    }
 
-    /* ── DIFFERENTIATORS ────────────────────────────────── */
-    .diff { padding: 6rem 0; }
-    .diff__head { margin-bottom: 4.5rem; }
-    .diff__hl {
-      font-family: var(--font-d);
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 700; line-height: 1.0;
-      letter-spacing: -0.01em; max-width: 22ch; margin-top: 1rem;
+    /* ═══════════════════════════════════════════════════════
+       TASK 3 — HERO SECTION
+       Full-viewport · video BG · world map SVG · content
+    ═══════════════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
-    .diff__list {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;
+
+    /* Video background */
+    .hero__video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
     }
-    .diff-item {
-      padding-top: 1.75rem;
-      border-top: 1px solid var(--border);
+
+    /* Gradient overlay — subtle top, dark bottom 40% */
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(11, 24, 41, 0.22) 0%,
+        rgba(11, 24, 41, 0.14) 35%,
+        rgba(11, 24, 41, 0.28) 55%,
+        rgba(11, 24, 41, 0.68) 72%,
+        rgba(11, 24, 41, 0.88) 88%,
+        rgba(11, 24, 41, 0.94) 100%
+      );
     }
-    .diff-item__tag {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      margin-bottom: 1.25rem;
+
+    /* World map SVG layer */
+    .hero__map {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
     }
-    .diff-item__tag::before {
+    .hero__map svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Continent paths */
+    .map-land {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.28);
+      stroke-width: 0.9;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    /* Shipping route arcs */
+    .map-route {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 0.65;
+      stroke-dasharray: 3 5;
+      opacity: 0.28;
+      animation: route-drift 50s linear infinite;
+    }
+    .map-route:nth-child(odd) { animation-direction: reverse; }
+    @keyframes route-drift {
+      to { stroke-dashoffset: -200; }
+    }
+
+    /* City hub dots */
+    .map-hub { cursor: default; }
+    .map-hub-ring {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1.25;
+    }
+    .map-hub-dot { fill: var(--gold); }
+    .map-hub-pulse {
+      fill: var(--gold);
+      opacity: 0;
+      animation: hub-pulse 3.2s ease-out infinite;
+    }
+    @keyframes hub-pulse {
+      0%   { r: 3.5; opacity: 0.55; }
+      100% { r: 14;  opacity: 0; }
+    }
+    .map-hub:nth-child(1)  .map-hub-pulse { animation-delay: 0.0s; }
+    .map-hub:nth-child(2)  .map-hub-pulse { animation-delay: 0.45s; }
+    .map-hub:nth-child(3)  .map-hub-pulse { animation-delay: 0.9s; }
+    .map-hub:nth-child(4)  .map-hub-pulse { animation-delay: 1.35s; }
+    .map-hub:nth-child(5)  .map-hub-pulse { animation-delay: 1.8s; }
+    .map-hub:nth-child(6)  .map-hub-pulse { animation-delay: 2.25s; }
+    .map-hub:nth-child(7)  .map-hub-pulse { animation-delay: 2.7s; }
+
+    /* Hero body — flex column, content pushed to bottom */
+    .hero__body {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    /* Main copy block */
+    .hero__content {
+      padding: 0 var(--pad-x) 3rem;
+      max-width: var(--max-w);
+      width: 100%;
+      align-self: stretch;
+    }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.375rem;
+    }
+    .hero__eyebrow::before {
       content: '';
-      display: block; width: 20px; height: 2px;
-      background: var(--cobalt);
-    }
-    .diff-item__title {
-      font-family: var(--font-d);
-      font-size: 1.5rem; font-weight: 700; letter-spacing: 0.01em;
-      margin-bottom: 0.875rem;
-    }
-    .diff-item__body { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
-
-    /* ── CTA STRIP ──────────────────────────────────────── */
-    .cta-strip {
-      padding: 6rem 0;
-      background: linear-gradient(160deg, oklch(0.15 0.025 96) 0%, oklch(0.11 0.045 243) 55%);
-      border-top: 1px solid oklch(0.28 0.045 96);
-    }
-    .cta-strip__inner { text-align: center; }
-    .cta-strip__hl {
-      font-family: var(--font-d);
-      font-size: clamp(2.5rem, 5vw, 4.75rem);
-      font-weight: 800; line-height: 0.95;
-      letter-spacing: -0.025em; text-wrap: balance;
-      margin: 1.25rem 0;
-    }
-    .cta-strip__sub {
-      font-size: 1.0625rem; color: var(--muted);
-      max-width: 46ch; margin: 0 auto 2.5rem;
-    }
-    .cta-strip__actions {
-      display: flex; align-items: center; justify-content: center;
-      gap: 1rem; flex-wrap: wrap;
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: currentColor;
+      flex-shrink: 0;
     }
 
-    /* ── FOOTER ─────────────────────────────────────────── */
-    .footer { padding: 4.5rem 0 0; border-top: 1px solid var(--border); }
-    .footer__cols {
-      display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 3rem;
+    .hero__headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.625rem, 5.5vw, 5.25rem);
+      font-weight: 700;
+      line-height: 0.96;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      max-width: 16ch;
+      text-wrap: balance;
+      margin-bottom: 1.5rem;
     }
-    .footer__brand-name {
-      font-family: var(--font-d);
-      font-size: 1.125rem; font-weight: 800; letter-spacing: 0.10em;
-      margin-bottom: 0.75rem;
+
+    .hero__sub {
+      font-size: clamp(1rem, 1.6vw, 1.1875rem);
+      font-weight: 400;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.68);
+      max-width: 38ch;
+      margin-bottom: 2.25rem;
+      text-wrap: pretty;
     }
-    .footer__brand-name em { color: var(--cobalt); font-style: normal; }
-    .footer__tagline {
-      font-size: 0.875rem; color: var(--muted);
-      line-height: 1.6; max-width: 30ch;
+    .hero__sub strong {
+      color: rgba(255, 255, 255, 0.90);
+      font-weight: 600;
     }
-    .footer__col-head {
-      font-size: 0.6875rem; font-weight: 600;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 1.25rem;
-    }
-    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 0.625rem; }
-    .footer__links a {
-      font-size: 0.875rem; color: var(--dim); transition: color 0.2s;
-    }
-    .footer__links a:hover { color: var(--ink); }
-    .footer__bar {
-      margin-top: 3rem; padding: 1.5rem 0;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
       flex-wrap: wrap;
     }
-    .footer__copy { font-size: 0.8125rem; color: var(--muted); }
-    .footer__legal { display: flex; gap: 1.5rem; }
-    .footer__legal a { font-size: 0.8125rem; color: var(--muted); transition: color 0.2s; }
-    .footer__legal a:hover { color: var(--dim); }
 
-    /* ── RESPONSIVE ─────────────────────────────────────── */
-    @media (max-width: 1024px) {
-      .services__grid { grid-template-columns: repeat(2, 1fr); }
+    /* Hero primary CTA — large gold */
+    .btn-hero-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      padding: 14px 26px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition:
+        background 0.2s,
+        transform 0.28s var(--ease-out),
+        box-shadow 0.28s;
     }
+    .btn-hero-gold:hover {
+      background: var(--gold-hi);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(212, 168, 67, 0.35);
+    }
+    .btn-hero-gold:active { transform: translateY(0) scale(0.98); box-shadow: none; }
+
+    /* Hero secondary CTA — white outline */
+    .btn-hero-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      padding: 13px 26px;
+      border-radius: 5px;
+      border: 1.5px solid rgba(255, 255, 255, 0.42);
+      cursor: pointer;
+      white-space: nowrap;
+      transition:
+        border-color 0.2s,
+        background 0.2s,
+        transform 0.28s var(--ease-out);
+    }
+    .btn-hero-outline:hover {
+      border-color: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.09);
+      transform: translateY(-2px);
+    }
+    .btn-hero-outline:active { transform: translateY(0) scale(0.98); }
+
+    /* Stats strip — anchored at hero bottom */
+    .hero__stats {
+      border-top: 1px solid rgba(255, 255, 255, 0.13);
+    }
+    .hero__stats-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: flex;
+    }
+    .hero__stat {
+      flex: 1;
+      padding: 1.125rem 1.5rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.13);
+    }
+    .hero__stat:first-child { padding-left: 0; }
+    .hero__stat:last-child { border-right: none; }
+    .hero__stat-num {
+      font-family: var(--font-display);
+      font-size: 1.625rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+    .hero__stat-num em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero__stat-label {
+      font-size: 0.6563rem;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TASK 1 — STATS BAR
+       Full-width navy strip · GSAP counter on scroll enter
+    ═══════════════════════════════════════════════════════ */
+    .stats-bar {
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .stats-bar__inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stats-bar__item {
+      padding: 2.25rem 1.75rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+    .stats-bar__item:first-child { padding-left: 0; }
+    .stats-bar__item:last-child  { border-right: none; }
+    .stats-bar__num {
+      font-family: var(--font-display);
+      font-size: clamp(1.875rem, 2.75vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--white);
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+    }
+    .stats-bar__accent { color: var(--gold); }
+    .stats-bar__label {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.38);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TASK 2 — SERVICES SECTION
+       White bg · 4-column card grid · hover lift + gold border
+    ═══════════════════════════════════════════════════════ */
+    .services {
+      padding: 6rem 0 6.5rem;
+      background: var(--white);
+    }
+    .services__header {
+      margin-bottom: 3.5rem;
+    }
+    .services__kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .services__kicker::before {
+      content: '';
+      width: 18px; height: 1px;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .services__headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.875rem, 3vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--navy);
+      text-wrap: balance;
+    }
+
+    /* 4-column grid */
+    .services__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    /* Card — base state */
+    .service-card {
+      position: relative;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--white);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      /* Entry: fade only — avoids transform conflict with hover */
+      opacity: 0;
+      transition:
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .service-card.is-visible { opacity: 1; }
+
+    /* Stagger — only while NOT yet visible (resets on reveal so hover is instant) */
+    .services__grid > .service-card:nth-child(2):not(.is-visible) { transition-delay: 0.09s; }
+    .services__grid > .service-card:nth-child(3):not(.is-visible) { transition-delay: 0.18s; }
+    .services__grid > .service-card:nth-child(4):not(.is-visible) { transition-delay: 0.27s; }
+
+    /* Gold left-border reveal — scaleY from bottom, GPU-only */
+    .service-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--gold);
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Hover — gate behind pointer:fine so touch devices skip false positives */
+    @media (hover: hover) and (pointer: fine) {
+      .service-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 40px rgba(11, 24, 41, 0.09);
+      }
+      .service-card:hover::before { transform: scaleY(1); }
+    }
+
+    /* Icon badge */
+    .service-card__icon {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--gold-15);
+      border-radius: 8px;
+      color: var(--gold-lo);
+      margin-bottom: 1.5rem;
+      flex-shrink: 0;
+    }
+    .service-card__icon svg { width: 22px; height: 22px; }
+
+    .service-card__title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+      margin-bottom: 0.625rem;
+    }
+    .service-card__desc {
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: var(--navy-70);
+      flex: 1;
+      margin-bottom: 1.625rem;
+    }
+    .service-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gold-lo);
+      letter-spacing: 0.01em;
+      transition: color 0.2s, gap 0.2s;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .service-card__link:hover { color: var(--gold); gap: 9px; }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TASK 3 — TRUST SECTION
+       Gray bg · logo bar · 3 testimonial cards
+    ═══════════════════════════════════════════════════════ */
+    .trust {
+      background: #F5F7FA;
+      padding: 5.5rem 0 6rem;
+    }
+    .trust__kicker {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--navy-45);
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Logo bar */
+    .trust__logos {
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4rem;
+    }
+    .trust__logo {
+      flex: 1;
+      padding: 1.375rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: rgba(11, 24, 41, 0.22);
+      border-right: 1px solid var(--border);
+      user-select: none;
+      transition: color 0.25s;
+    }
+    .trust__logo:last-child { border-right: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .trust__logo:hover { color: var(--navy); }
+    }
+
+    /* Testimonial grid */
+    .trust__testimonials {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .testimonial-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transition:
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .testimonial-card.is-visible { opacity: 1; }
+    .trust__testimonials > .testimonial-card:nth-child(2):not(.is-visible) { transition-delay: 0.10s; }
+    .trust__testimonials > .testimonial-card:nth-child(3):not(.is-visible) { transition-delay: 0.20s; }
+
+    .testimonial-card__mark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2.75rem;
+      line-height: 0.8;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: block;
+      user-select: none;
+    }
+    .testimonial-card__body {
+      font-size: 0.9375rem;
+      line-height: 1.68;
+      color: var(--navy-70);
+      flex: 1;
+      margin-bottom: 1.75rem;
+    }
+    .testimonial-card__author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .testimonial-card__flag {
+      font-size: 1.375rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .testimonial-card__name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+    .testimonial-card__role {
+      font-size: 0.75rem;
+      color: var(--navy-45);
+      margin-top: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE — MOBILE
+    ═══════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      :root { --nav-h: 60px; --pad-x: 1.25rem; }
+
+      .nav__links,
+      .nav__actions { display: none; }
+      .nav__burger   { display: flex; }
+
+      .hero__content { padding-bottom: 2.25rem; }
+      .hero__headline {
+        font-size: clamp(2.25rem, 9.5vw, 3.25rem);
+        max-width: 18ch;
+      }
+
+      .hero__stats-inner {
+        flex-direction: column;
+      }
+      .hero__stat {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+        padding: 1rem 0;
+      }
+      .hero__stat:last-child { border-bottom: none; }
+
+      /* ── Stats bar ── */
+      .stats-bar__inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stats-bar__item {
+        padding: 1.5rem 1rem;
+        align-items: flex-start;
+      }
+      .stats-bar__item:first-child { padding-left: 0; }
+      .stats-bar__item:nth-child(2) { border-right: none; }
+      .stats-bar__item:nth-child(3) {
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-left: 0;
+      }
+      .stats-bar__item:nth-child(4) {
+        border-right: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      /* ── Trust logos ── */
+      .trust__logos {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .trust__logo {
+        flex: unset;
+        font-size: 0.875rem;
+        padding: 1.125rem 0.625rem;
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      .trust__logo:nth-child(3),
+      .trust__logo:nth-child(6) { border-right: none; }
+      .trust__logo:nth-child(4),
+      .trust__logo:nth-child(5),
+      .trust__logo:nth-child(6) { border-bottom: none; }
+
+      /* ── Testimonials ── */
+      .trust__testimonials { grid-template-columns: 1fr; }
+      .trust { padding: 4rem 0 4.5rem; }
+      .services { padding: 4rem 0 4.5rem; }
+    }
+
+    /* ── Services horizontal scroll (tablet + mobile) ─────── */
     @media (max-width: 900px) {
-      .nav__links { display: none; }
-      .services__head { flex-direction: column; align-items: flex-start; }
-      .network__grid { grid-template-columns: 1fr; gap: 3.5rem; }
-      .diff__list { grid-template-columns: 1fr; gap: 2rem; }
-      .footer__cols { grid-template-columns: 1fr 1fr; }
+      .services__grid {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 0.75rem;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        margin-left: calc(-1 * var(--pad-x));
+        margin-right: calc(-1 * var(--pad-x));
+        padding-left: var(--pad-x);
+        padding-right: var(--pad-x);
+      }
+      .services__grid::-webkit-scrollbar { display: none; }
+      .service-card {
+        min-width: 270px;
+        flex-shrink: 0;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ACCESSIBILITY
+    ═══════════════════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      .map-hub-pulse { animation: none !important; opacity: 0 !important; }
+      .map-route     { animation: none !important; }
+      *              { transition-duration: 0.01ms !important;
+                       animation-duration:  0.01ms !important; }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       NETWORK SECTION — dark navy · left copy + stats · right globe
+    ═══════════════════════════════════════════════════════ */
+    .network {
+      background: var(--navy);
+      padding: 6rem 0;
+      overflow: hidden;
+    }
+    .network__inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .network__kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+    .network__kicker::before {
+      content: '';
+      width: 18px; height: 1px;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .network__headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 2.6vw, 2.375rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 2.5rem;
+      text-wrap: balance;
+    }
+    .network__stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem 2.5rem;
+    }
+    .network__stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .network__stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(1.875rem, 2.4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--white);
+    }
+    .network__stat-num em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .network__stat-label {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.38);
+    }
+
+    /* Globe canvas wrapper */
+    .network__globe-wrap {
+      position: relative;
+      height: 480px;
+    }
+    #globe-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    #globe-canvas:active { cursor: grabbing; }
+
+    /* City popup */
+    .globe-popup {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      min-width: 196px;
+      background: rgba(11, 24, 41, 0.90);
+      border: 1px solid rgba(212, 168, 67, 0.30);
+      border-radius: 8px;
+      padding: 1rem 1.25rem 1.125rem;
+      opacity: 0;
+      transform: scale(0.95) translateY(-6px);
+      transform-origin: top right;
+      pointer-events: none;
+      transition:
+        opacity 0.22s var(--ease-out),
+        transform 0.22s var(--ease-out);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .globe-popup.is-open {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+    .globe-popup__close {
+      position: absolute;
+      top: 6px; right: 8px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.40);
+      font-size: 1.0625rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 5px;
+      transition: color 0.15s;
+    }
+    .globe-popup__close:hover { color: var(--white); }
+    .globe-popup__city {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.375rem;
+      letter-spacing: -0.02em;
+      padding-right: 20px;
+    }
+    .globe-popup__routes {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.55;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       MAGNETIC BUTTONS — GSAP handles translate/scale
+       CSS provides gold glow hover state
+    ═══════════════════════════════════════════════════════ */
+    .btn-gold,
+    .btn-hero-gold,
+    .btn-hero-outline {
+      will-change: transform;
+    }
+    .btn-gold:hover {
+      background: var(--gold-lo);
+      box-shadow:
+        0 0 0 3px var(--gold-30),
+        0 8px 24px rgba(212, 168, 67, 0.38);
+    }
+    .btn-hero-gold:hover {
+      box-shadow:
+        0 0 0 3px var(--gold-30),
+        0 12px 32px rgba(212, 168, 67, 0.44);
+    }
+    .btn-hero-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(212, 168, 67, 0.08);
+      box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.18);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       FOOTER — dark navy · 4-column links · truck strip
+    ═══════════════════════════════════════════════════════ */
+    .footer {
+      background: var(--navy);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Animated truck strip */
+    .footer__truck-strip {
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer__road {
+      position: absolute;
+      bottom: 11px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(212, 168, 67, 0.20);
+    }
+    .footer__truck {
+      position: absolute;
+      bottom: 12px;
+      height: 36px;
+      width: auto;
+      animation: truck-drive 8s linear infinite;
+    }
+    @keyframes truck-drive {
+      from { transform: translateX(-220px); }
+      to   { transform: translateX(105vw);  }
+    }
+
+    /* Footer main grid */
+    .footer__main {
+      padding: 4rem 0 3rem;
+    }
+    .footer__grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: grid;
+      grid-template-columns: 1.6fr repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .footer__brand-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.875rem;
+    }
+    .footer__brand-desc {
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.38);
+      max-width: 26ch;
+      margin-bottom: 1.5rem;
+    }
+    .footer__col-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: 1.25rem;
+    }
+    .footer__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .footer__links a {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.50);
+      transition: color 0.2s;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .footer__links a:hover { color: var(--gold); }
+    }
+
+    /* Bottom bar */
+    .footer__bottom {
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer__bottom-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 1.25rem var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .footer__copy {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.28);
+    }
+    .footer__socials {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+    .footer__social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.42);
+      transition:
+        color 0.22s var(--ease-out),
+        border-color 0.22s var(--ease-out),
+        background 0.22s var(--ease-out);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .footer__social:hover {
+        color: var(--navy);
+        border-color: var(--gold);
+        background: var(--gold);
+      }
+    }
+    .footer__social svg { width: 15px; height: 15px; }
+
+    /* Network + footer responsive breakpoints */
+    @media (max-width: 900px) {
+      .network__inner {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .network__globe-wrap { height: 340px; }
+      .footer__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem 3rem;
+      }
     }
     @media (max-width: 600px) {
-      .services__grid { grid-template-columns: 1fr; }
-      .hero__reveal { bottom: 5rem; }
-      .cta-strip__actions { flex-direction: column; align-items: stretch; }
-      .footer__cols { grid-template-columns: 1fr; }
-    }
-
-    /* ── REDUCED MOTION ─────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-      .hero__overlay { opacity: 1 !important; }
-      .hero__reveal  { opacity: 1 !important; transform: none !important; }
+      .network { padding: 4rem 0; }
+      .footer__grid {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+      }
+      .footer__bottom-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.875rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══ FILM GRAIN ════════════════════════════════════ -->
-  <svg class="grain" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-    <filter id="grain-f" x="0%" y="0%" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
-      <feColorMatrix type="saturate" values="0"/>
-    </filter>
-    <rect width="100%" height="100%" filter="url(#grain-f)" opacity="0.04"/>
-  </svg>
+<!-- ═══════════════════════════════════════════════════════
+     TASK 2 — NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav" aria-label="Main navigation">
+  <div class="wrap">
+    <div class="nav__inner">
 
-  <!-- ═══ NAV ══════════════════════════════════════════ -->
-  <nav class="nav" id="nav">
-    <div class="nav__brand">TRANS<em>LOG</em></div>
-    <ul class="nav__links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#network">Network</a></li>
-      <li><a href="#about">Why Us</a></li>
-      <li><a href="#">Careers</a></li>
-    </ul>
-    <a href="#contact" class="nav__cta">
-      Request Demo
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
-  </nav>
+      <!-- Logo left -->
+      <a href="/" class="nav__logo" aria-label="Translog home">
+        <div class="nav__logo-mark" aria-hidden="true">
+          <!-- Arrow mark -->
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M7.5 2.5 12 7l-4.5 4.5" stroke="#0B1829" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        TRANSLOG
+      </a>
 
-  <!-- ═══ HERO ══════════════════════════════════════════ -->
-  <section class="hero" id="hero">
-    <video class="hero__video" src="hero-loop.mp4"
-           muted playsinline preload="auto" aria-hidden="true"></video>
-    <div class="hero__overlay" aria-hidden="true"></div>
-    <div class="hero__reveal" aria-hidden="true">
-      <div class="hero__reveal-glass">
-        <p class="hero__reveal-headline">MOVE ANYTHING.<br>ANYWHERE.<br>ON TIME.</p>
+      <!-- Links center -->
+      <ul class="nav__links" role="list">
+        <li><a href="#network">Network</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+
+      <!-- CTA right -->
+      <div class="nav__actions">
+        <a href="#quote" class="btn-gold">Get a Quote</a>
+      </div>
+
+      <!-- Hamburger (mobile) -->
+      <button class="nav__burger" id="nav-burger"
+              aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile overlay -->
+<div class="nav__mobile" id="nav-mobile" role="dialog" aria-label="Navigation menu" aria-hidden="true">
+  <ul class="nav__mobile-links" role="list">
+    <li><a href="#network" class="js-close-menu">Network</a></li>
+    <li><a href="#services" class="js-close-menu">Services</a></li>
+    <li><a href="#pricing" class="js-close-menu">Pricing</a></li>
+    <li><a href="#about"   class="js-close-menu">About</a></li>
+  </ul>
+  <div class="nav__mobile-divider" aria-hidden="true"></div>
+  <a href="#quote" class="btn-gold js-close-menu"
+     style="font-size:0.9375rem;padding:13px 28px;">Get a Quote</a>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TASK 3 — HERO SECTION
+═══════════════════════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-heading">
+
+  <!-- Video background -->
+  <video class="hero__video" autoplay muted loop playsinline
+         aria-hidden="true" preload="auto">
+    <source src="hero-loop.mp4" type="video/mp4">
+  </video>
+
+  <!-- Dark gradient overlay -->
+  <div class="hero__overlay" aria-hidden="true"></div>
+
+  <!-- World map SVG overlay -->
+  <!--
+    Equirectangular projection, viewBox 0 0 1000 500
+    x = (lon + 180) / 360 * 1000
+    y = (90  − lat) / 180 * 500
+    Continent paths are simplified outlines — white stroke, no fill.
+    Hub dots: gold, with pulsing animation rings.
+  -->
+  <div class="hero__map" aria-hidden="true">
+    <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice"
+         xmlns="http://www.w3.org/2000/svg">
+
+      <defs>
+        <filter id="hub-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ── CONTINENTS ──────────────────────────────────── -->
+
+      <!-- North America -->
+      <path class="map-land" d="
+        M 28,100 L 44,75 L 72,63 L 111,58 L 160,44 L 197,35 L 236,33
+        L 264,34 L 291,39 L 319,56 L 338,78 L 352,116
+        L 340,124 L 325,128 L 306,133 L 294,140 L 284,149 L 278,163
+        L 278,181 L 270,192 L 262,200 L 257,206
+        L 248,217 L 244,225
+        L 258,220 L 270,212 L 280,207
+        L 267,214 L 258,222 L 254,230
+        L 222,213 L 208,198 L 200,191 L 197,186
+        L 188,178 L 179,167 L 175,162
+        L 167,149 L 158,135 L 156,119 L 152,107
+        L 140,96 L 122,87 L 110,83 L 97,83
+        L 78,90 L 62,96 Z
+      "/>
+
+      <!-- Greenland -->
+      <path class="map-land" d="
+        M 330,32 L 347,22 L 372,18 L 398,20 L 416,26 L 420,36
+        L 412,46 L 398,52 L 379,54 L 357,50 L 340,42 Z
+      "/>
+
+      <!-- Central America / isthmus (thin tail south of Mexico) -->
+      <path class="map-land" d="
+        M 254,230 L 250,238 L 247,246 L 250,252
+        L 254,246 L 258,238 L 258,232 Z
+      "/>
+
+      <!-- South America -->
+      <path class="map-land" d="
+        M 286,228 L 295,224 L 307,220 L 320,218 L 333,218
+        L 348,222 L 364,232 L 378,244 L 391,254 L 403,264
+        L 406,278 L 403,294 L 398,308 L 390,318 L 381,313
+        L 374,320 L 365,328 L 358,335 L 350,341 L 342,344
+        L 334,352 L 326,363 L 320,378 L 319,392 L 320,403
+        L 315,412 L 308,406 L 300,395 L 296,382 L 296,368
+        L 292,354 L 284,341 L 278,328 L 275,312 L 273,296
+        L 270,280 L 270,264 L 272,250 L 278,240 L 286,228 Z
+      "/>
+
+      <!-- Europe -->
+      <path class="map-land" d="
+        M 477,148 L 481,140 L 484,130 L 487,122 L 486,112
+        L 491,100 L 490,93 L 492,89
+        L 498,87 L 503,88 L 506,95 L 503,104 L 497,111
+        L 505,109 L 514,106 L 521,108 L 525,116 L 519,124
+        L 531,119 L 539,107 L 538,97 L 533,90
+        L 529,83 L 528,75 L 530,67 L 533,58 L 539,53
+        L 549,50 L 561,50 L 573,51 L 581,53 L 586,56
+        L 586,63 L 584,72 L 583,83
+        L 578,91 L 572,97 L 567,100
+        L 562,106 L 562,115 L 567,121 L 572,128
+        L 575,136 L 572,143 L 567,147 L 572,147
+        L 561,147 L 553,144 L 547,147
+        L 541,144 L 539,135 L 530,130 L 519,128
+        L 509,122 L 500,120 L 492,122 L 487,130
+        L 484,138 L 480,145 Z
+      "/>
+
+      <!-- Great Britain (simplified) -->
+      <path class="map-land" d="
+        M 488,107 L 492,97 L 499,91 L 504,96 L 502,107 L 495,114 Z
+      "/>
+
+      <!-- Ireland -->
+      <path class="map-land" d="
+        M 484,108 L 487,103 L 490,106 L 487,112 Z
+      "/>
+
+      <!-- Africa -->
+      <path class="map-land" d="
+        M 464,172 L 470,163 L 478,155 L 486,150
+        L 496,147 L 508,146 L 520,146 L 531,147
+        L 547,147 L 555,151 L 564,155 L 572,155
+        L 581,157 L 589,164 L 593,172 L 600,183
+        L 607,196 L 614,208 L 619,219
+        L 628,219 L 636,216 L 641,217
+        L 641,225 L 634,234 L 626,248 L 619,253
+        L 614,264 L 611,278 L 608,291 L 603,307
+        L 598,320 L 597,322 L 592,330 L 585,336
+        L 580,333 L 573,337 L 564,341 L 556,344
+        L 550,347 L 543,344 L 536,338 L 533,333
+        L 533,323 L 534,311 L 536,300 L 536,297
+        L 530,284 L 524,272 L 517,259 L 513,248
+        L 510,242 L 506,238 L 497,237 L 489,238
+        L 481,240 L 473,242 L 465,240 L 459,234
+        L 455,226 L 453,217 L 453,208
+        L 453,198 L 453,192 L 455,184 L 460,176 Z
+      "/>
+
+      <!-- Madagascar -->
+      <path class="map-land" d="
+        M 608,316 L 611,305 L 614,298 L 618,302
+        L 617,314 L 614,322 L 609,324 Z
+      "/>
+
+      <!-- Asia (mainland — Turkey through Siberia, India, SE Asia) -->
+      <path class="map-land" d="
+        M 583,83 L 583,75 L 584,65 L 586,56
+        L 597,53 L 611,52 L 625,51 L 639,50
+        L 653,50 L 667,47 L 694,44 L 722,43
+        L 750,42 L 778,42 L 806,42 L 833,43
+        L 856,44 L 880,46 L 903,47 L 925,47
+        L 942,48 L 953,50 L 963,51 L 972,47
+        L 981,49 L 992,55 L 1000,61
+        L 1000,78 L 991,83 L 978,91 L 964,98
+        L 953,108 L 944,117 L 933,120 L 919,122
+        L 906,122 L 892,125 L 881,131 L 872,138
+        L 868,148 L 864,156
+        L 856,156 L 850,162 L 847,170 L 842,178
+        L 836,186 L 833,189
+        L 826,193 L 816,194 L 806,193
+        L 800,192 L 800,205 L 800,219
+        L 795,228 L 789,238 L 786,247
+        L 781,250 L 775,244 L 772,231 L 769,218
+        L 772,206 L 767,199 L 761,196 L 753,199
+        L 747,205 L 741,211 L 733,214 L 722,211
+        L 722,228
+        L 717,236 L 709,243 L 701,243 L 695,237
+        L 693,228 L 691,219 L 689,208 L 689,197
+        L 689,189 L 682,183 L 675,181 L 667,179
+        L 661,179 L 656,182 L 650,183 L 644,186
+        L 639,183 L 636,178
+        L 636,170 L 632,162 L 627,157 L 620,153
+        L 614,150 L 606,148 L 597,148 L 589,150
+        L 584,153 L 581,157
+        L 578,153 L 575,147 L 572,147
+        L 567,147 L 564,143 L 564,135
+        L 567,128 L 572,121 L 567,115
+        L 561,108 L 561,100 L 567,97 L 572,94
+        L 578,90 L 583,86 Z
+      "/>
+
+      <!-- Sri Lanka -->
+      <path class="map-land" d="
+        M 716,240 L 719,236 L 722,240 L 720,246 L 716,244 Z
+      "/>
+
+      <!-- Japan (Honshu) -->
+      <path class="map-land" d="
+        M 864,148 L 869,142 L 878,138 L 886,136
+        L 892,133 L 895,139 L 891,147 L 883,152
+        L 875,156 L 869,158 L 864,156 L 862,150 Z
+      "/>
+
+      <!-- Japan (Kyushu/Shikoku) -->
+      <path class="map-land" d="
+        M 861,157 L 867,154 L 872,157 L 869,163 L 863,163 Z
+      "/>
+
+      <!-- Philippines (simplified blob) -->
+      <path class="map-land" d="
+        M 822,233 L 825,228 L 830,225 L 833,230
+        L 831,237 L 826,239 Z
+      "/>
+
+      <!-- Borneo -->
+      <path class="map-land" d="
+        M 800,260 L 806,252 L 814,248 L 820,250
+        L 825,258 L 822,267 L 814,272 L 805,270 Z
+      "/>
+
+      <!-- Sumatra -->
+      <path class="map-land" d="
+        M 764,258 L 770,252 L 780,248 L 789,248
+        L 794,254 L 791,262 L 781,266 L 772,264 Z
+      "/>
+
+      <!-- Java -->
+      <path class="map-land" d="
+        M 778,278 L 786,274 L 800,274 L 806,278
+        L 800,284 L 789,284 L 778,282 Z
+      "/>
+
+      <!-- Australia -->
+      <path class="map-land" d="
+        M 817,311 L 822,305 L 831,299 L 842,294
+        L 853,291 L 864,288 L 872,283 L 878,278
+        L 883,273 L 889,271 L 897,274 L 903,281
+        L 908,289 L 911,298 L 914,308 L 917,317
+        L 920,326 L 922,336 L 919,344 L 914,350
+        L 908,354 L 900,358 L 892,360 L 881,360
+        L 872,360 L 861,358 L 850,355 L 841,350
+        L 831,345 L 822,340 L 817,333 L 815,322 Z
+      "/>
+
+      <!-- Tasmania -->
+      <path class="map-land" d="
+        M 883,370 L 886,364 L 892,362 L 897,367
+        L 895,374 L 889,375 Z
+      "/>
+
+      <!-- New Zealand (North Island) -->
+      <path class="map-land" d="
+        M 942,358 L 945,350 L 950,346 L 953,350
+        L 952,358 L 947,364 Z
+      "/>
+
+      <!-- New Zealand (South Island) -->
+      <path class="map-land" d="
+        M 944,372 L 948,364 L 953,362 L 956,367
+        L 953,376 L 947,378 Z
+      "/>
+
+      <!-- ── SHIPPING ROUTES (dashed arcs) ────────────────── -->
+      <!-- LA → Rotterdam -->
+      <path class="map-route" d="M 172,155 Q 342,65 513,106"/>
+      <!-- Rotterdam → Dubai -->
+      <path class="map-route" d="M 513,106 Q 580,85 652,180"/>
+      <!-- Dubai → Singapore -->
+      <path class="map-route" d="M 652,180 Q 720,228 788,246"/>
+      <!-- Singapore → Shanghai -->
+      <path class="map-route" d="M 788,246 Q 814,192 838,163"/>
+      <!-- Rotterdam → Lagos -->
+      <path class="map-route" d="M 513,106 Q 510,168 509,232"/>
+      <!-- Lagos → São Paulo -->
+      <path class="map-route" d="M 509,232 Q 440,295 371,315"/>
+      <!-- São Paulo → LA -->
+      <path class="map-route" d="M 371,315 Q 250,310 172,155"/>
+
+      <!-- ── HUB CITY DOTS ──────────────────────────────────
+           Equirectangular coords:
+           Rotterdam  (52°N,   4.5°E) → x=513, y=106
+           Shanghai   (31.2°N,121.5°E)→ x=838, y=163
+           Dubai      (25.2°N, 55.3°E)→ x=652, y=180
+           Lagos      ( 6.5°N,  3.4°E)→ x=509, y=232
+           LA         (34.1°N,118.2°W)→ x=172, y=155
+           São Paulo  (23.5°S, 46.6°W)→ x=371, y=315
+           Singapore  ( 1.4°N,103.8°E)→ x=788, y=246
+      ──────────────────────────────────────────────────── -->
+
+      <!-- Rotterdam -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="513" cy="106" r="3.5"/>
+        <circle class="map-hub-ring"  cx="513" cy="106" r="4.5"/>
+        <circle class="map-hub-dot"   cx="513" cy="106" r="2.2"/>
+      </g>
+
+      <!-- Shanghai -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="838" cy="163" r="3.5"/>
+        <circle class="map-hub-ring"  cx="838" cy="163" r="4.5"/>
+        <circle class="map-hub-dot"   cx="838" cy="163" r="2.2"/>
+      </g>
+
+      <!-- Dubai -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="652" cy="180" r="3.5"/>
+        <circle class="map-hub-ring"  cx="652" cy="180" r="4.5"/>
+        <circle class="map-hub-dot"   cx="652" cy="180" r="2.2"/>
+      </g>
+
+      <!-- Lagos -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="509" cy="232" r="3.5"/>
+        <circle class="map-hub-ring"  cx="509" cy="232" r="4.5"/>
+        <circle class="map-hub-dot"   cx="509" cy="232" r="2.2"/>
+      </g>
+
+      <!-- Los Angeles -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="172" cy="155" r="3.5"/>
+        <circle class="map-hub-ring"  cx="172" cy="155" r="4.5"/>
+        <circle class="map-hub-dot"   cx="172" cy="155" r="2.2"/>
+      </g>
+
+      <!-- São Paulo -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="371" cy="315" r="3.5"/>
+        <circle class="map-hub-ring"  cx="371" cy="315" r="4.5"/>
+        <circle class="map-hub-dot"   cx="371" cy="315" r="2.2"/>
+      </g>
+
+      <!-- Singapore -->
+      <g class="map-hub" filter="url(#hub-glow)">
+        <circle class="map-hub-pulse" cx="788" cy="246" r="3.5"/>
+        <circle class="map-hub-ring"  cx="788" cy="246" r="4.5"/>
+        <circle class="map-hub-dot"   cx="788" cy="246" r="2.2"/>
+      </g>
+
+    </svg>
+  </div>
+  <!-- /hero__map -->
+
+  <!-- Hero body — content + stats -->
+  <div class="hero__body">
+
+    <!-- Main copy -->
+    <div class="hero__content wrap">
+      <p class="hero__eyebrow" aria-hidden="true">Global Logistics Network</p>
+
+      <h1 class="hero__headline" id="hero-heading">
+        YOUR CARGO.<br>
+        EVERY CONTINENT.<br>
+        ON TIME.
+      </h1>
+
+      <p class="hero__sub">
+        <strong>190 countries.</strong> One operations team. Zero handoffs.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#quote" class="btn-hero-gold" id="hero-cta-primary">
+          Get a Quote
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M2.5 7.5h10M8.5 3.5l4 4-4 4"
+                  stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#network" class="btn-hero-outline">
+          See Our Network
+        </a>
       </div>
     </div>
-  </section>
 
-  <!-- ═══ CLIENTS ══════════════════════════════════════ -->
-  <div class="proof">
-    <div class="proof__inner wrap">
-      <p class="label">Trusted by 140+ enterprise supply chains globally</p>
-      <div class="proof__logos">
-        <span class="proof__logo">Meridian Group</span>
-        <span class="proof__logo">Axiom Pharma</span>
-        <span class="proof__logo">NordCargo</span>
-        <span class="proof__logo">Pacifica Trade</span>
-        <span class="proof__logo">ELCO Industries</span>
-        <span class="proof__logo">Orbis Retail</span>
+    <!-- Stats strip -->
+    <div class="hero__stats" aria-label="Key statistics">
+      <div class="hero__stats-inner">
+        <div class="hero__stat">
+          <div class="hero__stat-num">190<em>+</em></div>
+          <div class="hero__stat-label">Countries Served</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-num">48<em>h</em></div>
+          <div class="hero__stat-label">Avg. Customs Clearance</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-num">3.2<em>M</em></div>
+          <div class="hero__stat-label">Shipments Per Year</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-num">99<em>.1%</em></div>
+          <div class="hero__stat-label">On-Time Delivery</div>
+        </div>
       </div>
+    </div>
+
+  </div>
+  <!-- /hero__body -->
+
+</section>
+<!-- /hero -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════════════════ -->
+<section class="stats-bar" aria-label="Key metrics">
+  <div class="stats-bar__inner">
+
+    <div class="stats-bar__item">
+      <div class="stats-bar__num">
+        <span class="stats-counter" data-target="190" data-comma="false">0</span><span class="stats-bar__accent">+</span>
+      </div>
+      <p class="stats-bar__label">Countries Served</p>
+    </div>
+
+    <div class="stats-bar__item">
+      <div class="stats-bar__num">
+        <span class="stats-counter" data-target="2400" data-comma="true">0</span><span class="stats-bar__accent">+</span>
+      </div>
+      <p class="stats-bar__label">Active Routes</p>
+    </div>
+
+    <div class="stats-bar__item">
+      <div class="stats-bar__num">
+        <span class="stats-counter" data-target="98" data-comma="false">0</span><span class="stats-bar__accent">%</span>
+      </div>
+      <p class="stats-bar__label">On-Time Delivery</p>
+    </div>
+
+    <div class="stats-bar__item">
+      <div class="stats-bar__num">
+        <span class="stats-counter" data-target="14" data-comma="false">0</span><span class="stats-bar__accent">M+</span>
+      </div>
+      <p class="stats-bar__label">Annual Shipments</p>
+    </div>
+
+  </div>
+</section>
+<!-- /stats-bar -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     NETWORK SECTION
+═══════════════════════════════════════════════════════ -->
+<section class="network" id="network" aria-labelledby="network-heading">
+  <div class="network__inner">
+
+    <!-- Left: copy + 4 stats -->
+    <div class="network__left">
+      <p class="network__kicker">Global Infrastructure</p>
+      <h2 class="network__headline" id="network-heading">
+        Infrastructure at the junctions where freight breaks.
+      </h2>
+      <div class="network__stats" aria-label="Network statistics">
+        <div class="network__stat">
+          <div class="network__stat-num">87</div>
+          <div class="network__stat-label">Terminals</div>
+        </div>
+        <div class="network__stat">
+          <div class="network__stat-num">340<em>+</em></div>
+          <div class="network__stat-label">Carriers</div>
+        </div>
+        <div class="network__stat">
+          <div class="network__stat-num">24<em>/7</em></div>
+          <div class="network__stat-label">Tracking</div>
+        </div>
+        <div class="network__stat">
+          <div class="network__stat-num">4<em>h</em></div>
+          <div class="network__stat-label">SLA</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: interactive Three.js globe -->
+    <div class="network__right">
+      <div class="network__globe-wrap" id="globe-wrap"
+           aria-label="Interactive global network map">
+        <canvas id="globe-canvas"
+                role="img"
+                aria-label="3D globe showing freight hub connections — click a gold dot to see routes"></canvas>
+        <!-- City popup -->
+        <div class="globe-popup" id="globe-popup" role="status" aria-live="polite">
+          <button class="globe-popup__close" id="globe-popup-close" aria-label="Close">×</button>
+          <div class="globe-popup__city"   id="globe-popup-city"></div>
+          <div class="globe-popup__routes" id="globe-popup-routes"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- /network -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SERVICES SECTION
+═══════════════════════════════════════════════════════ -->
+<section class="services" id="services">
+  <div class="wrap">
+
+    <header class="services__header">
+      <p class="services__kicker">What we move</p>
+      <h2 class="services__headline">One provider. Every mode.</h2>
+    </header>
+
+    <div class="services__grid" id="services-grid">
+
+      <!-- Air Freight -->
+      <article class="service-card">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 15l-2-1-7-5.5V3.5a1.5 1.5 0 00-3 0v5L2 14l2 1.5 6-2V16l-2 1.5V20l4-1 4 1v-2.5L14 16v-2.5l6 2 2-1.5z"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Air Freight</h3>
+        <p class="service-card__desc">Time-critical cargo delivered door to door. Priority lanes, 24 h booking confirmation, global network of 180 airline partners.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Ocean Freight -->
+      <article class="service-card">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.5l1 2.5h16l1-2.5H3z"/>
+            <path d="M3 14h18M9 14V9.5l3-2.5 3 2.5V14"/>
+            <path d="M12 7V4.5"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Ocean Freight</h3>
+        <p class="service-card__desc">FCL and LCL solutions across major trade lanes. Real-time container tracking, customs pre-clearance, and guaranteed vessel space.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Rail + Road -->
+      <article class="service-card">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="3" width="14" height="13" rx="2"/>
+            <path d="M8 20l1-4h6l1 4M5 12h14M9 3v6h6V3"/>
+            <circle cx="9.5" cy="16.5" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="14.5" cy="16.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Rail + Road</h3>
+        <p class="service-card__desc">Intermodal solutions spanning 52 countries. Silk Road rail corridors from China to Europe in 18 days, last-yard trucking included.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Last Mile -->
+      <article class="service-card">
+        <div class="service-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+        </div>
+        <h3 class="service-card__title">Last Mile</h3>
+        <p class="service-card__desc">From regional DCs to the end recipient. Flexible delivery windows, proof-of-delivery APIs, and same-day urban delivery in 38 cities.</p>
+        <a href="#" class="service-card__link">
+          Learn more
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7.5 3l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+<!-- /services -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TRUST SECTION
+═══════════════════════════════════════════════════════ -->
+<section class="trust" id="trust">
+  <div class="wrap">
+
+    <p class="trust__kicker">Trusted by the operations teams behind Nestlé, Siemens &amp; Volvo</p>
+
+    <!-- Logo bar -->
+    <div class="trust__logos" role="list" aria-label="Customer companies">
+      <div class="trust__logo" role="listitem">Nestlé</div>
+      <div class="trust__logo" role="listitem">Siemens</div>
+      <div class="trust__logo" role="listitem">Unilever</div>
+      <div class="trust__logo" role="listitem">BASF</div>
+      <div class="trust__logo" role="listitem">Volvo Group</div>
+      <div class="trust__logo" role="listitem">ABB</div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="trust__testimonials" id="testimonials-grid">
+
+      <article class="testimonial-card">
+        <span class="testimonial-card__mark" aria-hidden="true">"</span>
+        <p class="testimonial-card__body">Transit times to our Southeast Asia distributors dropped 34% after the first quarter. One team, one dashboard, zero re-brokering.</p>
+        <div class="testimonial-card__author">
+          <span class="testimonial-card__flag" aria-label="Denmark">🇩🇰</span>
+          <div>
+            <div class="testimonial-card__name">Thomas Berg</div>
+            <div class="testimonial-card__role">Head of Supply Chain, Nordea Industrial</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="testimonial-card">
+        <span class="testimonial-card__mark" aria-hidden="true">"</span>
+        <p class="testimonial-card__body">We replaced four TMS platforms with a single view. The operations team reclaimed 11 hours a week — that's real capacity back in the business.</p>
+        <div class="testimonial-card__author">
+          <span class="testimonial-card__flag" aria-label="India">🇮🇳</span>
+          <div>
+            <div class="testimonial-card__name">Priya Rajan</div>
+            <div class="testimonial-card__role">VP Global Logistics, Apex Ventures</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="testimonial-card">
+        <span class="testimonial-card__mark" aria-hidden="true">"</span>
+        <p class="testimonial-card__body">Q4 shipments landed 3 weeks ahead of schedule through their Rotterdam bonded warehouse. First time in five years we weren't firefighting in November.</p>
+        <div class="testimonial-card__author">
+          <span class="testimonial-card__flag" aria-label="Brazil">🇧🇷</span>
+          <div>
+            <div class="testimonial-card__name">Carlos Mendes</div>
+            <div class="testimonial-card__role">Chief Operating Officer, Meridian Consumer</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<!-- /trust -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer class="footer" id="about" aria-label="Site footer">
+
+  <!-- Animated truck strip -->
+  <div class="footer__truck-strip" aria-hidden="true">
+    <div class="footer__road"></div>
+    <svg class="footer__truck" viewBox="0 0 200 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Cargo trailer -->
+      <rect x="2" y="6" width="108" height="30" rx="2" fill="#D4A843"/>
+      <!-- Rib lines on trailer -->
+      <line x1="38"  y1="6" x2="38"  y2="36" stroke="#B88C2E" stroke-width="1.5" opacity="0.45"/>
+      <line x1="74"  y1="6" x2="74"  y2="36" stroke="#B88C2E" stroke-width="1.5" opacity="0.45"/>
+      <!-- Horizontal divider -->
+      <line x1="2" y1="21" x2="110" y2="21" stroke="#B88C2E" stroke-width="1" opacity="0.28"/>
+      <!-- Cab body -->
+      <path d="M110 8 L110 36 L188 36 L188 22 L166 6 L110 6 Z" fill="#D4A843"/>
+      <!-- Front cab panel (darker) -->
+      <path d="M166 6 L188 22 L188 36 L166 36 Z" fill="#B88C2E"/>
+      <!-- Windshield -->
+      <path d="M168 9 L184 21 L170 21 L157 11 Z" fill="#0B1829" opacity="0.38"/>
+      <!-- Exhaust stack -->
+      <rect x="113" y="0" width="5" height="11" rx="2.5" fill="#B88C2E"/>
+      <!-- Trailer rear wheel (left) -->
+      <circle cx="36"  cy="39" r="7" fill="#0B1829"/>
+      <circle cx="36"  cy="39" r="3.5" fill="#B88C2E"/>
+      <circle cx="36"  cy="39" r="1.4" fill="#D4A843"/>
+      <!-- Trailer rear wheel (right) -->
+      <circle cx="56"  cy="39" r="7" fill="#0B1829"/>
+      <circle cx="56"  cy="39" r="3.5" fill="#B88C2E"/>
+      <circle cx="56"  cy="39" r="1.4" fill="#D4A843"/>
+      <!-- Drive wheel -->
+      <circle cx="152" cy="39" r="7" fill="#0B1829"/>
+      <circle cx="152" cy="39" r="3.5" fill="#B88C2E"/>
+      <circle cx="152" cy="39" r="1.4" fill="#D4A843"/>
+      <!-- Steer wheel -->
+      <circle cx="176" cy="39" r="6" fill="#0B1829"/>
+      <circle cx="176" cy="39" r="3"   fill="#B88C2E"/>
+      <circle cx="176" cy="39" r="1.2" fill="#D4A843"/>
+    </svg>
+  </div>
+
+  <!-- 4-column link grid -->
+  <div class="footer__main">
+    <div class="footer__grid">
+
+      <!-- Brand column -->
+      <div>
+        <div class="footer__brand-name">
+          <div class="nav__logo-mark" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M7.5 2.5 12 7l-4.5 4.5"
+                    stroke="#0B1829" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          TRANSLOG
+        </div>
+        <p class="footer__brand-desc">
+          Freight infrastructure connecting 190 countries through one operations layer.
+        </p>
+        <a href="#quote" class="btn-gold" style="font-size:0.8125rem;padding:9px 18px;">
+          Get a Quote
+        </a>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <p class="footer__col-title">Services</p>
+        <ul class="footer__links">
+          <li><a href="#services">Air Freight</a></li>
+          <li><a href="#services">Ocean Freight</a></li>
+          <li><a href="#services">Rail &amp; Road</a></li>
+          <li><a href="#services">Last Mile</a></li>
+          <li><a href="#">Customs Brokerage</a></li>
+        </ul>
+      </div>
+
+      <!-- Network -->
+      <div>
+        <p class="footer__col-title">Network</p>
+        <ul class="footer__links">
+          <li><a href="#network">Our Terminals</a></li>
+          <li><a href="#network">Route Map</a></li>
+          <li><a href="#">Partner Carriers</a></li>
+          <li><a href="#">Track Shipment</a></li>
+          <li><a href="#">API Access</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <p class="footer__col-title">Company</p>
+        <ul class="footer__links">
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Partners</a></li>
+        </ul>
+      </div>
+
     </div>
   </div>
 
-  <!-- ═══ SERVICES ═════════════════════════════════════ -->
-  <section class="services" id="services">
-    <div class="wrap">
-      <div class="services__head">
-        <h2 class="services__hl gsap-reveal">One provider.<br>Every mode.</h2>
-        <p class="services__sub gsap-reveal">Air, ocean, rail, road — fully integrated under one contract, one dashboard, one operations team. No broker handoffs.</p>
-      </div>
-      <div class="services__grid">
+  <!-- Bottom bar: copyright left · socials right -->
+  <div class="footer__bottom">
+    <div class="footer__bottom-inner">
+      <p class="footer__copy">&#169; 2026 TRANSLOG. All rights reserved.</p>
+      <nav class="footer__socials" aria-label="Social media">
 
-        <div class="svc">
-          <svg class="svc__icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4">
-            <path d="M2 32 C10 27 17 17 27 19 C34 21 39 27 42 32" stroke-linecap="round"/>
-            <path d="M22 19 L27 9 L35 9 L37 19" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="7"  cy="34" r="2.5"/>
-            <circle cx="37" cy="34" r="2.5"/>
-            <path d="M2 34 h40" stroke-linecap="round"/>
-          </svg>
-          <h3 class="svc__title">Air Freight</h3>
-          <p class="svc__body">Time-critical cargo moved on dedicated and chartered aircraft across 6 continents. Express, deferred, and charter options with 24h booking.</p>
-          <a href="#" class="svc__more">
-            Learn more
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-
-        <div class="svc">
-          <svg class="svc__icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4">
-            <rect x="3" y="20" width="38" height="15" rx="1.5"/>
-            <path d="M3 25 h38"/>
-            <path d="M14 20 v15 M30 20 v15"/>
-            <circle cx="9"  cy="38" r="2.5" fill="currentColor" stroke="none"/>
-            <circle cx="35" cy="38" r="2.5" fill="currentColor" stroke="none"/>
-            <path d="M3 20 L7 12 h30 l4 8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3 class="svc__title">Ocean Freight</h3>
-          <p class="svc__body">Full-container and LCL shipments across every major trade lane — Pacific, Atlantic, and Indian Ocean corridors.</p>
-          <a href="#" class="svc__more">
-            Learn more
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-
-        <div class="svc">
-          <svg class="svc__icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4">
-            <rect x="2"  y="24" width="22" height="11" rx="1"/>
-            <rect x="24" y="17" width="18" height="18" rx="1"/>
-            <circle cx="8"  cy="38" r="2.5" fill="currentColor" stroke="none"/>
-            <circle cx="20" cy="38" r="2.5" fill="currentColor" stroke="none"/>
-            <circle cx="36" cy="38" r="2.5" fill="currentColor" stroke="none"/>
-            <path d="M2 29 h40" stroke-linecap="round"/>
-          </svg>
-          <h3 class="svc__title">Rail &amp; Road</h3>
-          <p class="svc__body">Pan-continental road and rail corridors linking Europe, Asia, and the Americas with intermodal precision and door-to-door coverage.</p>
-          <a href="#" class="svc__more">
-            Learn more
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-
-        <div class="svc">
-          <svg class="svc__icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4">
-            <path d="M22 4 C13 4 7 12 7 19 c0 11 15 22 15 22 s15-11 15-22 c0-7-6-15-15-15z"/>
-            <circle cx="22" cy="19" r="5"/>
-          </svg>
-          <h3 class="svc__title">Last Mile</h3>
-          <p class="svc__body">Urban and suburban delivery infrastructure in 80+ metropolitan areas — integrated tracking and verified proof of delivery.</p>
-          <a href="#" class="svc__more">
-            Learn more
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ NETWORK ═══════════════════════════════════════ -->
-  <section class="network" id="network">
-    <div class="wrap">
-      <div class="network__grid">
-
-        <div class="gsap-reveal">
-          <p class="label" style="margin-bottom:1rem">The Infrastructure Layer</p>
-          <h2 class="network__hl gsap-split">Infrastructure at the junctions where freight breaks.</h2>
-          <p class="network__body">Most freight problems happen at transitions — the handoff from port to rail, from customs to final mile. TRANSLOG owns those junctions in 87 terminals across 6 continents. We don't sub out the hard parts.</p>
-          <div class="metrics">
-            <div class="metric">
-              <div class="metric__val">87</div>
-              <div class="metric__lbl">terminals owned</div>
-            </div>
-            <div class="metric">
-              <div class="metric__val">340+</div>
-              <div class="metric__lbl">vetted carrier partners</div>
-            </div>
-            <div class="metric">
-              <div class="metric__val">24/7</div>
-              <div class="metric__lbl">live event tracking</div>
-            </div>
-            <div class="metric">
-              <div class="metric__val">4h</div>
-              <div class="metric__lbl">response SLA, guaranteed</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Three.js Globe -->
-        <div id="globe-container" class="gsap-reveal">
-          <div class="globe-loading" id="globe-loading">Loading network&#8230;</div>
-          <div id="globe-popup" class="globe-popup">
-            <div class="globe-popup__header">
-              <div>
-                <div class="gp-city">Rotterdam</div>
-                <div class="gp-region">Northern Europe</div>
-              </div>
-              <button class="gp-close" aria-label="Close popup">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                </svg>
-              </button>
-            </div>
-            <div class="gp-routes-row">
-              <span class="gp-routes">280</span>
-              <span class="gp-routes-lbl">active routes</span>
-            </div>
-            <p class="gp-info">Europe's largest port — primary EU import gateway.</p>
-            <a href="#contact" class="gp-cta">Open a lane &#8594;</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ DIFFERENTIATORS ═══════════════════════════════ -->
-  <section class="diff" id="about">
-    <div class="wrap">
-      <div class="diff__head">
-        <p class="label">Why TRANSLOG</p>
-        <h2 class="diff__hl gsap-split">Logistics is not a commodity. Here is the proof.</h2>
-      </div>
-      <div class="diff__list">
-
-        <div class="diff-item gsap-reveal">
-          <div class="diff-item__tag label">Real-Time Visibility</div>
-          <h3 class="diff-item__title">Event-level tracking. Always.</h3>
-          <p class="diff-item__body">Not batch updates — live telemetry on every handoff, port crossing, and customs hold. One dashboard. No refresh needed.</p>
-        </div>
-
-        <div class="diff-item gsap-reveal">
-          <div class="diff-item__tag label">Dedicated Operations</div>
-          <h3 class="diff-item__title">A team, not a portal.</h3>
-          <p class="diff-item__body">Each enterprise account gets a named operations manager with regional expertise and a 4-hour response SLA, 24/7. We answer the phone when it matters.</p>
-        </div>
-
-        <div class="diff-item gsap-reveal">
-          <div class="diff-item__tag label">Customs &amp; Compliance</div>
-          <h3 class="diff-item__title">In-house trade compliance.</h3>
-          <p class="diff-item__body">Trade compliance specialists in 18 countries catch duty changes, tariff shifts, and regulatory updates before they reach your desk — or your schedule.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ CTA STRIP ═════════════════════════════════════ -->
-  <section class="cta-strip" id="contact">
-    <div class="cta-strip__inner wrap-s">
-      <p class="label" style="color: oklch(0.85 0.140 96)">Start a Conversation</p>
-      <h2 class="cta-strip__hl gsap-reveal">
-        Ready to move?<br>So are we.
-      </h2>
-      <p class="cta-strip__sub gsap-reveal">Send us a lane, a volume, and a timeline. We'll come back with a quote and an assigned ops team within 24 hours.</p>
-      <div class="cta-strip__actions gsap-reveal">
-        <a href="#" class="btn btn-primary" style="padding:.9375rem 2.25rem;font-size:1rem">
-          Talk to an Expert
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- LinkedIn -->
+        <a href="#" class="footer__social" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
           </svg>
         </a>
-        <a href="#" class="btn btn-ghost" style="padding:.9375rem 2rem;font-size:1rem;border-color:oklch(0.28 0.060 96)">
-          See Real Routes
+
+        <!-- X / Twitter -->
+        <a href="#" class="footer__social" aria-label="X (Twitter)">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
         </a>
-      </div>
+
+        <!-- Instagram -->
+        <a href="#" class="footer__social" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+
+      </nav>
     </div>
-  </section>
+  </div>
 
-  <!-- ═══ FOOTER ════════════════════════════════════════ -->
-  <footer class="footer">
-    <div class="wrap">
-      <div class="footer__cols">
-        <div>
-          <div class="footer__brand-name">TRANS<em>LOG</em></div>
-          <p class="footer__tagline">Intercontinental logistics infrastructure for enterprises that move the world's goods.</p>
-        </div>
-        <div>
-          <p class="footer__col-head">Services</p>
-          <ul class="footer__links">
-            <li><a href="#">Air Freight</a></li>
-            <li><a href="#">Ocean Freight</a></li>
-            <li><a href="#">Rail &amp; Road</a></li>
-            <li><a href="#">Last Mile</a></li>
-            <li><a href="#">Customs Brokerage</a></li>
-          </ul>
-        </div>
-        <div>
-          <p class="footer__col-head">Company</p>
-          <ul class="footer__links">
-            <li><a href="#">About</a></li>
-            <li><a href="#">Network</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Press</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <p class="footer__col-head">Resources</p>
-          <ul class="footer__links">
-            <li><a href="#">Track a Shipment</a></li>
-            <li><a href="#">Rate Calculator</a></li>
-            <li><a href="#">Case Studies</a></li>
-            <li><a href="#">Compliance Guide</a></li>
-            <li><a href="#">API Docs</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer__bar">
-        <p class="footer__copy">&#169; 2026 TRANSLOG Logistics Group. All rights reserved.</p>
-        <div class="footer__legal">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Cookie Settings</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+</footer>
+<!-- /footer -->
 
-  <!-- ═══ SCRIPTS ═══════════════════════════════════════ -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <script>
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+<!-- Three.js r128 + OrbitControls (legacy global build) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Nav scroll behavior ────────────────────────────── */
+  var nav = document.getElementById('nav');
+
+  function updateNav() {
+    if (window.scrollY > 24) {
+      nav.classList.add('is-scrolled');
+    } else {
+      nav.classList.remove('is-scrolled');
+    }
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  /* ── Mobile menu ────────────────────────────────────── */
+  var burger    = document.getElementById('nav-burger');
+  var mobileNav = document.getElementById('nav-mobile');
+  var menuOpen  = false;
+
+  function openMenu() {
+    menuOpen = true;
+    burger.classList.add('is-open');
+    burger.setAttribute('aria-expanded', 'true');
+    mobileNav.classList.add('is-open');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+    burger.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+    mobileNav.classList.remove('is-open');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  burger.addEventListener('click', function () {
+    if (menuOpen) { closeMenu(); } else { openMenu(); }
+  });
+
+  /* Close on Escape */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && menuOpen) { closeMenu(); }
+  });
+
+  /* Close from overlay links */
+  document.querySelectorAll('.js-close-menu').forEach(function (el) {
+    el.addEventListener('click', function () {
+      if (menuOpen) { closeMenu(); }
+    });
+  });
+
+  /* ── GSAP Counter Animation ─────────────────────────── */
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 
-    /* ── LENIS SMOOTH SCROLL ─────────────────────────────── */
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      smoothTouch: false,
-      touchMultiplier: 2,
-    });
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add(time => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('.stats-counter').forEach(function (el) {
+      var target   = parseInt(el.dataset.target, 10);
+      var useComma = el.dataset.comma === 'true';
+      var proxy    = { val: 0 };
 
-    /* ── NAV SCROLL STATE ────────────────────────────────── */
-    ScrollTrigger.create({
-      start: 'top -72',
-      onUpdate: s => document.getElementById('nav').classList.toggle('scrolled', s.progress > 0)
-    });
-
-    /* ── SCROLL VIDEO HERO ───────────────────────────────── */
-    (function initVideoHero() {
-      var video   = document.querySelector('.hero__video');
-      var overlay = document.querySelector('.hero__overlay');
-      var reveal  = document.querySelector('.hero__reveal');
-      if (!video) return;
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        overlay.style.opacity = '1';
-        reveal.style.opacity  = '1';
-        return;
-      }
-
-      var ready = false;
-      function setupScrub() {
-        if (ready) return;
-        ready = true;
-        ScrollTrigger.create({
-          trigger: '.hero',
-          start:   'top top',
-          end:     '+=200%',
-          pin:     true,
-          scrub:   1.2,
-          onUpdate: function(self) {
-            var dur = video.duration;
-            if (dur && !isNaN(dur)) video.currentTime = self.progress * dur;
-            var t = Math.max(0, (self.progress - 0.5) / 0.5);
-            overlay.style.opacity  = t;
-            reveal.style.opacity   = t;
-            reveal.style.transform = 'translateY(' + ((1 - t) * 24) + 'px)';
-          }
-        });
-      }
-
-      video.addEventListener('loadedmetadata', setupScrub, { once: true });
-      if (video.readyState >= 1) setupScrub();
-    })();
-
-    /* ── CUSTOM WORD SPLIT ───────────────────────────────── */
-    function splitWords(el) {
-      if (!el || el.dataset.splitDone) return [];
-      el.dataset.splitDone = '1';
-      const words = el.textContent.trim().split(/\s+/);
-      el.innerHTML = words.map(w =>
-        '<span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:0.06em"><span class="sw-inner" style="display:inline-block">' + w + '</span></span>'
-      ).join(' ');
-      return Array.from(el.querySelectorAll('.sw-inner'));
-    }
-
-    document.querySelectorAll('.gsap-split').forEach(el => {
-      const words = splitWords(el);
-      if (!words.length) return;
-      gsap.set(words, { yPercent: 110 });
       ScrollTrigger.create({
         trigger: el,
         start: 'top 88%',
-        onEnter() {
-          gsap.to(words, {
-            yPercent: 0,
-            duration: 0.78,
-            stagger: { amount: 0.30 },
-            ease: 'power4.out',
+        once: true,
+        onEnter: function () {
+          gsap.to(proxy, {
+            val: target,
+            duration: 2,
+            ease: 'power3.out',
+            onUpdate: function () {
+              var v = Math.round(proxy.val);
+              el.textContent = useComma ? v.toLocaleString() : String(v);
+            },
+            onComplete: function () {
+              el.textContent = useComma ? target.toLocaleString() : String(target);
+            }
           });
         }
       });
     });
+  }
 
-    /* ── GENERIC SCROLL REVEALS ──────────────────────────── */
-    gsap.utils.toArray('.gsap-reveal').forEach(el => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 36 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 87%', toggleActions: 'play none none none' }
-        }
-      );
-    });
-
-    /* ── SERVICE CARDS — ENTRY + HOVER ──────────────────── */
-    gsap.utils.toArray('.svc').forEach((card, i) => {
-      gsap.fromTo(card,
-        { opacity: 0, y: 32 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.7, ease: 'power3.out',
-          delay: i * 0.07,
-          scrollTrigger: { trigger: '.services__grid', start: 'top 86%', toggleActions: 'play none none none' }
-        }
-      );
-
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const xPct = (e.clientX - rect.left) / rect.width  - 0.5;
-        const yPct = (e.clientY - rect.top)  / rect.height - 0.5;
-        gsap.to(card, {
-          rotateY: xPct * 8,
-          rotateX: -yPct * 6,
-          transformPerspective: 900,
-          duration: 0.4,
-          ease: 'power2.out',
-        });
-      });
-
-      card.addEventListener('mouseenter', () => {
-        gsap.to(card, { y: -5, duration: 0.35, ease: 'power2.out' });
-        const icon = card.querySelector('.svc__icon');
-        if (icon) gsap.to(icon, { scale: 1.14, duration: 0.3, ease: 'power2.out' });
-      });
-
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-          y: 0, rotateX: 0, rotateY: 0,
-          duration: 0.5, ease: 'power3.out',
-        });
-        const icon = card.querySelector('.svc__icon');
-        if (icon) gsap.to(icon, { scale: 1, duration: 0.3, ease: 'power2.out' });
-      });
-    });
-
-    /* ── PROOF LOGOS ─────────────────────────────────────── */
-    gsap.fromTo('.proof__logo',
-      { opacity: 0, y: 10 },
-      {
-        opacity: 0.4, y: 0,
-        duration: 0.6, stagger: 0.07, ease: 'power2.out',
-        scrollTrigger: { trigger: '.proof', start: 'top 88%' }
+  /* ── Scroll-reveal (IntersectionObserver) ─────────────── */
+  var revealIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealIO.unobserve(entry.target);
       }
+    });
+  }, { threshold: 0.10 });
+
+  document.querySelectorAll('.service-card, .testimonial-card').forEach(function (el) {
+    revealIO.observe(el);
+  });
+
+}());
+</script>
+
+<!-- ── Three.js Globe ──────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  if (typeof THREE === 'undefined') return;
+
+  var wrap   = document.getElementById('globe-wrap');
+  var canvas = document.getElementById('globe-canvas');
+  if (!wrap || !canvas) return;
+
+  /* ── Scene ── */
+  var scene  = new THREE.Scene();
+  var W = wrap.clientWidth, H = wrap.clientHeight;
+  var camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 100);
+  camera.position.z = 2.6;
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W, H);
+
+  window.addEventListener('resize', function () {
+    var nw = wrap.clientWidth, nh = wrap.clientHeight;
+    renderer.setSize(nw, nh);
+    camera.aspect = nw / nh;
+    camera.updateProjectionMatrix();
+  });
+
+  /* ── Globe sphere ── */
+  var globeGeo = new THREE.SphereGeometry(1, 64, 64);
+  var texture  = new THREE.TextureLoader().load(
+    'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'
+  );
+  var globeMat = new THREE.MeshPhongMaterial({ map: texture });
+  scene.add(new THREE.Mesh(globeGeo, globeMat));
+
+  /* ── Atmosphere glow ── */
+  var atmGeo = new THREE.SphereGeometry(1.026, 64, 64);
+  var atmMat = new THREE.MeshPhongMaterial({
+    color: 0x3366cc, transparent: true, opacity: 0.07, side: THREE.FrontSide
+  });
+  scene.add(new THREE.Mesh(atmGeo, atmMat));
+
+  /* ── Lights ── */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var sun = new THREE.DirectionalLight(0xfff8e8, 1.1);
+  sun.position.set(5, 3, 5);
+  scene.add(sun);
+
+  /* ── OrbitControls ── */
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableZoom    = false;
+  controls.enablePan     = false;
+  controls.autoRotate    = true;
+  controls.autoRotateSpeed = 0.45;
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minPolarAngle = Math.PI * 0.15;
+  controls.maxPolarAngle = Math.PI * 0.85;
+
+  /* Resume auto-rotate 2 s after last touch */
+  var idleTimer = null;
+  renderer.domElement.addEventListener('pointerdown', function () {
+    controls.autoRotate = false;
+    clearTimeout(idleTimer);
+  });
+  renderer.domElement.addEventListener('pointerup', function () {
+    idleTimer = setTimeout(function () { controls.autoRotate = true; }, 2000);
+  });
+
+  /* ── lat/lon → Vec3 ── */
+  function ll2v(lat, lon, r) {
+    var phi   = (90 - lat) * Math.PI / 180;
+    var theta = (lon + 180) * Math.PI / 180;
+    return new THREE.Vector3(
+      -r * Math.sin(phi) * Math.cos(theta),
+       r * Math.cos(phi),
+       r * Math.sin(phi) * Math.sin(theta)
     );
+  }
 
-    /* ── DIFF ITEMS STAGGER ──────────────────────────────── */
-    gsap.utils.toArray('.diff-item').forEach((item, i) => {
-      gsap.fromTo(item,
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.75, ease: 'power3.out',
-          delay: i * 0.10,
-          scrollTrigger: { trigger: '.diff__list', start: 'top 85%', toggleActions: 'play none none none' }
-        }
+  /* ── 10 hub cities ── */
+  var hubs = [
+    { name: 'Rotterdam',    lat:  51.9,  lon:   4.5, routes: 'Shanghai · New York · Lagos' },
+    { name: 'Shanghai',     lat:  31.2,  lon: 121.5, routes: 'Rotterdam · Singapore · Tokyo' },
+    { name: 'Dubai',        lat:  25.2,  lon:  55.3, routes: 'Mumbai · Rotterdam · Singapore' },
+    { name: 'Lagos',        lat:   6.5,  lon:   3.4, routes: 'Rotterdam · São Paulo' },
+    { name: 'Los Angeles',  lat:  34.1,  lon:-118.2, routes: 'Tokyo · São Paulo · New York' },
+    { name: 'São Paulo',    lat: -23.5,  lon: -46.6, routes: 'Los Angeles · Lagos · New York' },
+    { name: 'Singapore',    lat:   1.4,  lon: 103.8, routes: 'Shanghai · Dubai · Mumbai' },
+    { name: 'New York',     lat:  40.7,  lon: -74.0, routes: 'Rotterdam · Los Angeles · São Paulo' },
+    { name: 'Tokyo',        lat:  35.7,  lon: 139.7, routes: 'Shanghai · Los Angeles' },
+    { name: 'Mumbai',       lat:  19.1,  lon:  72.9, routes: 'Dubai · Singapore' },
+  ];
+
+  /* ── Hub dots + ring halos ── */
+  var dotGeo    = new THREE.SphereGeometry(0.02, 12, 12);
+  var dotMat    = new THREE.MeshBasicMaterial({ color: 0xD4A843 });
+  var hubMeshes = [];
+
+  hubs.forEach(function (hub) {
+    var pos = ll2v(hub.lat, hub.lon, 1.013);
+
+    var dot = new THREE.Mesh(dotGeo, dotMat.clone());
+    dot.position.copy(pos);
+    dot.userData = hub;
+    scene.add(dot);
+    hubMeshes.push(dot);
+
+    var ringGeo = new THREE.RingGeometry(0.028, 0.036, 24);
+    var ringMat = new THREE.MeshBasicMaterial({
+      color: 0xD4A843, side: THREE.DoubleSide, transparent: true, opacity: 0.55
+    });
+    var ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(pos);
+    ring.lookAt(pos.clone().multiplyScalar(2));
+    scene.add(ring);
+  });
+
+  /* ── Gold arc routes ── */
+  var arcDefs = [
+    [0,1],[0,3],[0,7],[1,6],[1,8],[2,9],[2,0],[3,5],[4,8],[4,5],[4,7],[5,7],[6,2],[6,9],[7,4]
+  ];
+
+  var arcs = arcDefs.map(function (pair) {
+    var a   = ll2v(hubs[pair[0]].lat, hubs[pair[0]].lon, 1.013);
+    var b   = ll2v(hubs[pair[1]].lat, hubs[pair[1]].lon, 1.013);
+    var mid = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
+    mid.normalize().multiplyScalar(1.013 + a.distanceTo(b) * 0.38);
+    var curve = new THREE.QuadraticBezierCurve3(a, mid, b);
+    var pts   = curve.getPoints(100);
+    var geo   = new THREE.BufferGeometry().setFromPoints(pts);
+    geo.setDrawRange(0, 0);
+    var mat   = new THREE.LineBasicMaterial({ color: 0xD4A843, transparent: true, opacity: 0.65 });
+    var line  = new THREE.Line(geo, mat);
+    scene.add(line);
+    return { line: line, count: pts.length };
+  });
+
+  /* ── City popup on click ── */
+  var raycaster  = new THREE.Raycaster();
+  var mouse      = new THREE.Vector2();
+  var popup      = document.getElementById('globe-popup');
+  var popCity    = document.getElementById('globe-popup-city');
+  var popRoutes  = document.getElementById('globe-popup-routes');
+  var popClose   = document.getElementById('globe-popup-close');
+
+  renderer.domElement.addEventListener('click', function (e) {
+    var rect = renderer.domElement.getBoundingClientRect();
+    mouse.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+    mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    var hits = raycaster.intersectObjects(hubMeshes);
+    if (hits.length) {
+      var hub = hits[0].object.userData;
+      popCity.textContent   = hub.name;
+      popRoutes.textContent = 'Routes: ' + hub.routes;
+      popup.classList.add('is-open');
+    }
+  });
+
+  if (popClose) {
+    popClose.addEventListener('click', function () {
+      popup.classList.remove('is-open');
+    });
+  }
+
+  /* ── Render loop ── */
+  var clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    var t = clock.getElapsedTime();
+
+    /* Shooting-star arc draw animation */
+    arcs.forEach(function (arc, i) {
+      var speed  = 0.20;
+      var phase  = ((t * speed) + (i / arcs.length)) % 1;
+      var head   = Math.min(phase * 2.4, 1);
+      var tail   = Math.max(phase * 2.4 - 1, 0);
+      arc.line.geometry.setDrawRange(
+        Math.round(tail * arc.count),
+        Math.round((head - tail) * arc.count)
       );
     });
 
-    /* ── THREE.JS GLOBE ──────────────────────────────────── */
-    (function initGlobe() {
-      var container = document.getElementById('globe-container');
-      if (!container || typeof THREE === 'undefined') return;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+}());
+</script>
 
-      var R = 1.85;
-      var scene = new THREE.Scene();
+<!-- ── GSAP Magnetic Buttons ───────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
 
-      var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-      camera.position.set(0, 0.25, 5.6);
+  if (typeof gsap === 'undefined') return;
 
-      var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x000000, 0);
+  var PULL = 0.32;
 
-      function sizeRenderer() {
-        var w = container.clientWidth;
-        var h = container.clientHeight || w;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-      }
-      sizeRenderer();
-      container.appendChild(renderer.domElement);
-
-      var controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping   = true;
-      controls.dampingFactor   = 0.07;
-      controls.enableZoom      = true;
-      controls.zoomSpeed       = 0.5;
-      controls.minDistance     = 3.5;
-      controls.maxDistance     = 9.0;
-      controls.autoRotate      = true;
-      controls.autoRotateSpeed = 0.5;
-      controls.enablePan       = false;
-
-      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-      var sunLight = new THREE.DirectionalLight(0xfff5e0, 1.1);
-      sunLight.position.set(5, 3, 5);
-      scene.add(sunLight);
-
-      /* ── Earth with NASA texture ── */
-      var loader = new THREE.TextureLoader();
-      var loadingEl = document.getElementById('globe-loading');
-
-      var earthMat = new THREE.MeshPhongMaterial({
-        shininess: 8,
-        specular: new THREE.Color(0x111111),
+  function attachMagnetic(el) {
+    el.addEventListener('mousemove', function (e) {
+      var rect = el.getBoundingClientRect();
+      var dx   = e.clientX - (rect.left + rect.width  * 0.5);
+      var dy   = e.clientY - (rect.top  + rect.height * 0.5);
+      gsap.to(el, {
+        x: dx * PULL,
+        y: dy * PULL,
+        scale: 1.03,
+        duration: 0.3,
+        ease: 'power3.out'
       });
-      var earthMesh = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), earthMat);
-      scene.add(earthMesh);
+    });
 
-      loader.load(
-        'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-        function(tex) {
-          earthMat.map = tex;
-          earthMat.needsUpdate = true;
-          if (loadingEl) loadingEl.style.display = 'none';
-        }
-      );
-      loader.load(
-        'https://unpkg.com/three-globe/example/img/earth-topology.png',
-        function(tex) {
-          earthMat.bumpMap = tex;
-          earthMat.bumpScale = 0.04;
-          earthMat.needsUpdate = true;
-        }
-      );
-
-      /* ── Atmosphere ── */
-      scene.add(new THREE.Mesh(
-        new THREE.SphereGeometry(R + 0.14, 32, 32),
-        new THREE.MeshPhongMaterial({ color: 0x2266ff, transparent: true, opacity: 0.07, side: THREE.FrontSide })
-      ));
-      scene.add(new THREE.Mesh(
-        new THREE.SphereGeometry(R + 0.30, 32, 32),
-        new THREE.MeshPhongMaterial({ color: 0x4488ff, transparent: true, opacity: 0.03, side: THREE.BackSide })
-      ));
-
-      /* ── Coordinate helper ── */
-      function ll2v(lat, lon, r) {
-        r = (r === undefined) ? R : r;
-        var phi   = (90 - lat) * Math.PI / 180;
-        var theta = (lon + 180) * Math.PI / 180;
-        return new THREE.Vector3(
-          -r * Math.sin(phi) * Math.cos(theta),
-           r * Math.cos(phi),
-           r * Math.sin(phi) * Math.sin(theta)
-        );
-      }
-
-      /* ── Hub cities ── */
-      var HUBS = [
-        { name: 'Rotterdam',   lat: 51.90, lon:   4.50, routes: 280, region: 'Northern Europe',  info: "Europe's largest port — primary EU import gateway." },
-        { name: 'Shanghai',    lat: 31.23, lon: 121.47, routes: 340, region: 'East Asia',         info: "World's busiest container port and Asia-Pacific hub." },
-        { name: 'Singapore',   lat:  1.35, lon: 103.82, routes: 290, region: 'Southeast Asia',    info: 'ASEAN nerve center with 24h customs clearance.' },
-        { name: 'Dubai',       lat: 25.20, lon:  55.27, routes: 210, region: 'Middle East',       info: 'MENA hub connecting Africa, South Asia, and the Gulf.' },
-        { name: 'Los Angeles', lat: 33.94, lon:-118.41, routes: 195, region: 'US West Coast',     info: 'Pacific gateway handling 40% of US imports from Asia.' },
-        { name: 'New York',    lat: 40.73, lon: -74.00, routes: 180, region: 'US East Coast',     info: 'Primary Atlantic seaboard hub for North American distribution.' },
-        { name: 'Lagos',       lat:  6.45, lon:   3.39, routes:  95, region: 'West Africa',       info: "Sub-Saharan gateway — TRANSLOG's fastest-growing market." },
-        { name: 'Sao Paulo',   lat:-23.54, lon: -46.63, routes: 120, region: 'South America',     info: 'Brazil and Southern Cone hub via Santos seaport.' },
-        { name: 'Mumbai',      lat: 19.07, lon:  72.88, routes: 150, region: 'South Asia',        info: "India's primary import/export hub serving 1.4B consumers." },
-        { name: 'Sydney',      lat:-33.87, lon: 151.21, routes:  80, region: 'Oceania',           info: 'Australia and New Zealand distribution base.' },
-      ];
-
-      var hitTargets = [];
-      var dotMeshes  = [];
-
-      HUBS.forEach(function(hub) {
-        var dot = new THREE.Mesh(
-          new THREE.SphereGeometry(0.030, 10, 10),
-          new THREE.MeshBasicMaterial({ color: 0xFFD700 })
-        );
-        dot.position.copy(ll2v(hub.lat, hub.lon, R + 0.012));
-        scene.add(dot);
-        dotMeshes.push(dot);
-
-        var hit = new THREE.Mesh(
-          new THREE.SphereGeometry(0.10, 8, 8),
-          new THREE.MeshBasicMaterial({ visible: false })
-        );
-        hit.position.copy(dot.position);
-        hit.userData = { hub: hub, dot: dot };
-        scene.add(hit);
-        hitTargets.push(hit);
+    el.addEventListener('mouseleave', function () {
+      gsap.to(el, {
+        x: 0,
+        y: 0,
+        scale: 1,
+        duration: 0.65,
+        ease: 'elastic.out(1, 0.45)'
       });
+    });
+  }
 
-      /* ── Route arcs — gold ── */
-      var ROUTES = [[0,1],[0,2],[0,3],[1,2],[2,3],[3,7],[4,1],[4,5],[1,8],[2,9],[5,7],[0,6]];
-      var arcMat  = new THREE.LineBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.50 });
+  document
+    .querySelectorAll('.btn-gold, .btn-hero-gold, .btn-hero-outline')
+    .forEach(attachMagnetic);
+}());
+</script>
 
-      var routeData = ROUTES.map(function(pair) {
-        var from  = ll2v(HUBS[pair[0]].lat, HUBS[pair[0]].lon, R);
-        var to    = ll2v(HUBS[pair[1]].lat, HUBS[pair[1]].lon, R);
-        var mid   = from.clone().add(to).normalize().multiplyScalar(R + 0.72);
-        var curve = new THREE.QuadraticBezierCurve3(from, mid, to);
-        scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)), arcMat.clone()));
-        return { curve: curve, progress: Math.random(), speed: 0.0007 + Math.random() * 0.0007 };
-      });
-
-      var ships = routeData.map(function() {
-        var m = new THREE.Mesh(
-          new THREE.SphereGeometry(0.022, 6, 6),
-          new THREE.MeshBasicMaterial({ color: 0xFFAA00 })
-        );
-        scene.add(m);
-        return m;
-      });
-
-      /* ── Popup ── */
-      var popup    = document.getElementById('globe-popup');
-      var gpCity   = popup.querySelector('.gp-city');
-      var gpRegion = popup.querySelector('.gp-region');
-      var gpRoutes = popup.querySelector('.gp-routes');
-      var gpInfo   = popup.querySelector('.gp-info');
-      var gpClose  = popup.querySelector('.gp-close');
-      var hoveredDot = null;
-
-      function showPopup(hub) {
-        gpCity.textContent   = hub.name;
-        gpRegion.textContent = hub.region;
-        gpRoutes.textContent = hub.routes + '+';
-        gpInfo.textContent   = hub.info;
-        popup.classList.add('visible');
-        controls.autoRotate = false;
-      }
-      function hidePopup() {
-        popup.classList.remove('visible');
-        controls.autoRotate = true;
-      }
-      gpClose.addEventListener('click', hidePopup);
-
-      var raycaster = new THREE.Raycaster();
-      var mouse2    = new THREE.Vector2();
-
-      renderer.domElement.addEventListener('click', function(e) {
-        var rect = renderer.domElement.getBoundingClientRect();
-        mouse2.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
-        mouse2.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
-        raycaster.setFromCamera(mouse2, camera);
-        var hits = raycaster.intersectObjects(hitTargets);
-        if (hits.length > 0) showPopup(hits[0].object.userData.hub);
-        else hidePopup();
-      });
-
-      renderer.domElement.addEventListener('mousemove', function(e) {
-        var rect = renderer.domElement.getBoundingClientRect();
-        mouse2.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
-        mouse2.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
-        raycaster.setFromCamera(mouse2, camera);
-        var hits = raycaster.intersectObjects(hitTargets);
-        if (hoveredDot) {
-          hoveredDot.material.color.set(0xFFD700);
-          hoveredDot = null;
-          renderer.domElement.style.cursor = 'crosshair';
-        }
-        if (hits.length > 0) {
-          var dot = hits[0].object.userData.dot;
-          dot.material.color.set(0xFF8800);
-          hoveredDot = dot;
-          renderer.domElement.style.cursor = 'pointer';
-        }
-      });
-
-      var prefersRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersRM) controls.autoRotate = false;
-
-      var rafId = null;
-      function animate() {
-        rafId = requestAnimationFrame(animate);
-        if (!prefersRM) {
-          routeData.forEach(function(r, idx) {
-            r.progress = (r.progress + r.speed) % 1;
-            ships[idx].position.copy(r.curve.getPoint(r.progress));
-          });
-        }
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      var io = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting) { if (!rafId) animate(); }
-        else { cancelAnimationFrame(rafId); rafId = null; }
-      }, { threshold: 0.1 });
-      io.observe(container);
-
-      window.addEventListener('resize', sizeRenderer);
-    })();
-  </script>
 </body>
 </html>
