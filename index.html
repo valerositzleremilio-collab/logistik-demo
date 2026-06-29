@@ -188,6 +188,7 @@
     .nav__dropdown-icon svg { width: 18px; height: 18px; }
     .nav__dropdown-text {}
     .nav__dropdown-label {
+      position: relative;
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--navy);
@@ -199,6 +200,21 @@
       color: var(--navy-45);
       line-height: 1.4;
       margin-top: 2px;
+    }
+    .nav__dropdown-label::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 1.5px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.22s var(--ease-out);
+    }
+    .nav__dropdown-item:hover .nav__dropdown-label::after {
+      transform: scaleX(1);
     }
 
     /* Center slot — Logo */
@@ -233,6 +249,9 @@
       justify-content: flex-end;
       gap: 1rem;
     }
+
+    /* Nav CTA — white text on gold for visibility over hero */
+    .nav__actions .btn-gold { color: var(--white); }
 
     /* Gold CTA button — reused across page */
     .btn-gold {
@@ -358,7 +377,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
+      object-position: right center;
     }
 
     /* Dual-direction overlay: strong left band for text legibility + dark bottom */
@@ -367,7 +386,7 @@
       inset: 0;
       z-index: 1;
       background:
-        linear-gradient(to right, rgba(11, 24, 41, 0.82) 0%, rgba(11, 24, 41, 0.55) 42%, rgba(11, 24, 41, 0.08) 70%, transparent 88%),
+        linear-gradient(to right, rgba(11, 24, 41, 0.85) 0%, rgba(11, 24, 41, 0.60) 35%, rgba(11, 24, 41, 0.15) 65%, rgba(11, 24, 41, 0.10) 100%),
         linear-gradient(to bottom, rgba(11, 24, 41, 0.15) 0%, rgba(11, 24, 41, 0.06) 30%, rgba(11, 24, 41, 0.52) 68%, rgba(11, 24, 41, 0.92) 100%);
     }
 
@@ -444,8 +463,9 @@
     /* Main copy block — stays in left half via text element constraints */
     .hero__content {
       padding: 0 var(--pad-x) 3.5rem;
-      max-width: var(--max-w);
+      max-width: 55%;
       width: 100%;
+      margin-left: 0;
     }
 
     .hero__headline {
@@ -494,7 +514,7 @@
       font-size: 0.9375rem;
       font-weight: 600;
       letter-spacing: 0.01em;
-      padding: 14px 26px;
+      padding: 16px 32px;
       border-radius: 5px;
       border: none;
       cursor: pointer;
@@ -910,7 +930,7 @@
       .nav__actions .btn-gold { display: none; }
       .nav__burger   { display: flex; }
 
-      .hero__content { padding-bottom: 2.25rem; }
+      .hero__content { padding-bottom: 2.25rem; max-width: 100%; }
       .hero__headline {
         font-size: clamp(2.25rem, 9.5vw, 3.25rem);
         max-width: 18ch;
@@ -988,6 +1008,25 @@
       }
     }
 
+    /* ── Hero scroll indicator ── */
+    .hero__scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      animation: scroll-bounce 2.2s ease-in-out infinite;
+    }
+    @keyframes scroll-bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0);  opacity: 0.65; }
+      50%       { transform: translateX(-50%) translateY(9px); opacity: 1; }
+    }
+
     /* ═══════════════════════════════════════════════════════
        ACCESSIBILITY
     ═══════════════════════════════════════════════════════ */
@@ -1003,7 +1042,7 @@
     ═══════════════════════════════════════════════════════ */
     .network {
       background: var(--navy);
-      padding: 6.5rem 0;
+      padding: 8rem 0;
       overflow: hidden;
     }
     .network__inner {
@@ -1075,7 +1114,9 @@
     /* Globe canvas wrapper */
     .network__globe-wrap {
       position: relative;
-      height: 420px;
+      height: 336px;
+      width: 80%;
+      margin: 0 auto;
     }
     #globe-canvas {
       width: 100%;
@@ -2000,6 +2041,14 @@
 
   </div>
   <!-- /hero__body -->
+
+  <!-- Scroll indicator -->
+  <div class="hero__scroll-indicator" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 9l6 6 6-6" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
 
 </section>
 <!-- /hero -->
